@@ -1,7 +1,3 @@
-Chắc chắn rồi! Dưới đây là một mẫu nội dung cho file `README.md` của dự án `SWork`, giải thích chi tiết cấu trúc tổng quan dựa trên phân tích trước đó. Bạn có thể sao chép và điều chỉnh theo nhu cầu cụ thể của mình. Nội dung được viết bằng Markdown, phù hợp với định dạng của file `README.md` trên GitHub hoặc các nền tảng quản lý mã nguồn khác.
-
----
-
 # SWork Project
 
 Welcome to the **SWork** project, a robust application built using .NET Core to manage job applications, employers, students, and related functionalities. This README provides an overview of the project structure, design patterns, and guidelines for contributors.
