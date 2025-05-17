@@ -14,7 +14,7 @@ namespace SWork.Data.Entities
         public int WalletID { get; set; }
         public int UserID { get; set; }
         public decimal Balance { get; set; } = 0;
-        public DateTime Last_updated { get; set; } = DateTime.Now;
+        public DateTime LastUpdated { get; set; } = DateTime.Now;
 
         // Navigation properties
         [ForeignKey("UserID")]

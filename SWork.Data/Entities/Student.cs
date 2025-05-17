@@ -16,8 +16,8 @@ namespace SWork.Data.Entities
         public int UserID { get; set; }
         public string University { get; set; }
         public string Major { get; set; }
-        public int? Year_of_study { get; set; }
-        public DateTime? Date_of_birth { get; set; }
+        public int? YearOfStudy { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public string Bio { get; set; }
         public int? SkillID { get; set; }
         public int? ResumeID { get; set; }

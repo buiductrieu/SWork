@@ -14,9 +14,9 @@ namespace SWork.Data.Entities
         public int TransactionID { get; set; }
         public int WalletID { get; set; }
         public decimal Amount { get; set; }
-        public string Transaction_type { get; set; } // 'DEPOSIT', 'WITHDRAWAL', 'PAYMENT'
+        public string TransactionType { get; set; } // 'DEPOSIT', 'WITHDRAWAL', 'PAYMENT'
         public string Description { get; set; }
-        public DateTime Created_at { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
         [ForeignKey("WalletID")]

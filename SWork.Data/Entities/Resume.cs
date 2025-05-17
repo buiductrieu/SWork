@@ -30,8 +30,8 @@ namespace SWork.Data.Entities
         public string Languages { get; set; }
         public string Awards { get; set; }
         public string Certificates { get; set; }
-        public DateTime Create_at { get; set; } = DateTime.Now;
-        public DateTime Update_at { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
         [ForeignKey("StudentID")]

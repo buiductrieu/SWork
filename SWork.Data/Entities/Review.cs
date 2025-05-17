@@ -14,19 +14,14 @@ namespace SWork.Data.Entities
         public int Review_id { get; set; }
         public int Reviewer_id { get; set; }
         public int Reviewee_id { get; set; }
-        public int? Job_id { get; set; }
         public int? ApplicationID { get; set; }
         public int Rating { get; set; }
         public string Comment { get; set; }
-        public DateTime Create_at { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
         [ForeignKey("Reviewer_id")]
         public virtual User Reviewer { get; set; }
-        [ForeignKey("Reviewee_id")]
-        public virtual User Reviewee { get; set; }
-        [ForeignKey("Job_id")]
-        public virtual Job Job { get; set; }
         [ForeignKey("ApplicationID")]
         public virtual Application Application { get; set; }
     }

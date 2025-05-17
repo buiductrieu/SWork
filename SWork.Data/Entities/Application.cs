@@ -15,9 +15,9 @@ namespace SWork.Data.Entities
         public int StudentID { get; set; }
         public int JobID { get; set; }
         public int ResumeID { get; set; }
-        public string Cover_letter { get; set; }
+        public string Coverletter { get; set; }
         public string Status { get; set; } = "PENDING";
-        public DateTime Applied_At { get; set; } = DateTime.Now;
+        public DateTime AppliedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
         [ForeignKey("StudentID")]

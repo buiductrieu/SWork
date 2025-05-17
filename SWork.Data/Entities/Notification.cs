@@ -15,8 +15,8 @@ namespace SWork.Data.Entities
         public int UserID { get; set; }
         public string Title { get; set; }
         public string Message { get; set; }
-        public bool Is_read { get; set; } = false;
-        public DateTime Created_at { get; set; } = DateTime.Now;
+        public bool IsRead { get; set; } = false;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
         [ForeignKey("UserID")]

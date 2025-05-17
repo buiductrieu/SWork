@@ -16,7 +16,7 @@ namespace SWork.Data.Entities
         public decimal Price { get; set; }
         public int DurationDays { get; set; }
         public bool IsActive { get; set; } = true;
-        public DateTime Create_at { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime Update_at { get; set; } = DateTime.Now;
 
         // Navigation properties

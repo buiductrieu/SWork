@@ -14,17 +14,17 @@ namespace SWork.Data.Entities
         [Required, EmailAddress, MaxLength(100)]
         public string Email { get; set; }
         [Required]
-        public string Password_hash { get; set; }
+        public string Password { get; set; }
         [MaxLength(15)]
-        public string Phone_number { get; set; }
+        public string PhoneNumber { get; set; }
         [Required, MaxLength(20)]
         public string Role { get; set; } // 'STUDENT', 'EMPLOYER', 'ADMIN'
         [MaxLength(100)]
-        public string Full_name { get; set; }
-        public string Avatar_url { get; set; }
-        public bool Is_active { get; set; } = true;
-        public DateTime Create_at { get; set; } = DateTime.Now;
-        public DateTime Update_at { get; set; } = DateTime.Now;
+        public string FullName { get; set; }
+        public string AvatarUrl { get; set; }
+        public bool IsActive { get; set; } = true;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
         public int? Rating { get; set; }
 
         // Navigation properties

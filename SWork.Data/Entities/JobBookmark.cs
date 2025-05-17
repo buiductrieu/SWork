@@ -14,7 +14,7 @@ namespace SWork.Data.Entities
         public int BookmarkID { get; set; }
         public int StudentID { get; set; }
         public int JobID { get; set; }
-        public DateTime Create_at { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
         [ForeignKey("StudentID")]

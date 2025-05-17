@@ -15,10 +15,10 @@ namespace SWork.Data.Entities
         public int UserID { get; set; }
         public string Company_name { get; set; }
         public string Industry { get; set; }
-        public string Company_size { get; set; }
+        public string CompanySize { get; set; }
         public string Website { get; set; }
         public string Description { get; set; }
-        public string Logo_url { get; set; }
+        public string LogoUrl { get; set; }
 
         // Navigation properties
         [ForeignKey("UserID")]
