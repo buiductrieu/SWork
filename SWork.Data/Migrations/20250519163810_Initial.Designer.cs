@@ -12,18 +12,171 @@ using SWork.Data.Models;
 namespace SWork.Data.Migrations
 {
     [DbContext(typeof(SWorkDbContext))]
-    [Migration("20250514113818_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250519163810_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "02405352-997b-436a-a76c-12e742242b53",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "b6b0543d-0a09-4174-acc2-8cffe85fb8fb",
+                            Name = "Employer",
+                            NormalizedName = "EMPLOYER"
+                        },
+                        new
+                        {
+                            Id = "9e74b109-f3f2-465b-a1e5-39d45e82f3ec",
+                            Name = "Student",
+                            NormalizedName = "STUDENT"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
 
             modelBuilder.Entity("Report", b =>
                 {
@@ -33,33 +186,34 @@ namespace SWork.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReportID"));
 
-                    b.Property<string>("Admin_notes")
+                    b.Property<string>("AdminNotes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Created_at")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Report_content_id")
+                    b.Property<int>("ReportIontentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Reported_content_type")
+                    b.Property<string>("ReportedContentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Resolved_at")
+                    b.Property<DateTime?>("ResolvedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ReportID");
 
@@ -76,10 +230,10 @@ namespace SWork.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApplicationID"));
 
-                    b.Property<DateTime>("Applied_At")
+                    b.Property<DateTime>("AppliedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Cover_letter")
+                    b.Property<string>("Coverletter")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -107,6 +261,93 @@ namespace SWork.Data.Migrations
                     b.ToTable("Applications");
                 });
 
+            modelBuilder.Entity("SWork.Data.Entities.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AvatarUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
             modelBuilder.Entity("SWork.Data.Entities.Employer", b =>
                 {
                     b.Property<int>("EmployerID")
@@ -115,11 +356,11 @@ namespace SWork.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployerID"));
 
-                    b.Property<string>("Company_name")
+                    b.Property<string>("CompanySize")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Company_size")
+                    b.Property<string>("Company_name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -131,12 +372,13 @@ namespace SWork.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Logo_url")
+                    b.Property<string>("LogoUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Website")
                         .IsRequired()
@@ -161,7 +403,7 @@ namespace SWork.Data.Migrations
                     b.Property<int>("ApplicationID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Created_at")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Duration_minutes")
@@ -171,7 +413,7 @@ namespace SWork.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Meeting_link")
+                    b.Property<string>("MeetingLink")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -179,7 +421,7 @@ namespace SWork.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Scheduled_time")
+                    b.Property<DateTime>("ScheduledTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
@@ -204,7 +446,7 @@ namespace SWork.Data.Migrations
                     b.Property<int?>("CategoryID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Create_at")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -214,7 +456,7 @@ namespace SWork.Data.Migrations
                     b.Property<int>("EmployerID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("End_date")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ImageUrl")
@@ -229,13 +471,11 @@ namespace SWork.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Review_id")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("Salary")
+                    b.Property<decimal>("Salary")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("Start_date")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
@@ -245,17 +485,14 @@ namespace SWork.Data.Migrations
                     b.Property<int?>("SubscriptionID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SubscriptionID1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Update_at")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Working_hours")
+                    b.Property<string>("WorkingHours")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -266,8 +503,6 @@ namespace SWork.Data.Migrations
                     b.HasIndex("EmployerID");
 
                     b.HasIndex("SubscriptionID");
-
-                    b.HasIndex("SubscriptionID1");
 
                     b.ToTable("Jobs");
                 });
@@ -280,7 +515,7 @@ namespace SWork.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookmarkID"));
 
-                    b.Property<DateTime>("Create_at")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("JobID")
@@ -308,16 +543,13 @@ namespace SWork.Data.Migrations
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CategoryID");
-
-                    b.HasIndex("CategoryName")
-                        .IsUnique();
 
                     b.ToTable("JobCategories");
                 });
@@ -330,10 +562,10 @@ namespace SWork.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationID"));
 
-                    b.Property<DateTime>("Created_at")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Is_read")
+                    b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
@@ -344,14 +576,56 @@ namespace SWork.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("NotificationID");
 
                     b.HasIndex("UserID");
 
                     b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("SWork.Data.Entities.RefreshToken", b =>
+                {
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CreatedByIp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReasonRevoked")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RevokedByIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RevokedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Token");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("SWork.Data.Entities.Resume", b =>
@@ -374,7 +648,7 @@ namespace SWork.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Create_at")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Education")
@@ -430,7 +704,7 @@ namespace SWork.Data.Migrations
                     b.Property<int?>("TemplateID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Update_at")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ResumeID");
@@ -477,17 +751,14 @@ namespace SWork.Data.Migrations
                     b.Property<int?>("ApplicationID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ApplicationID1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Create_at")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Job_id")
+                    b.Property<int?>("JobID")
                         .HasColumnType("int");
 
                     b.Property<int>("Rating")
@@ -496,18 +767,15 @@ namespace SWork.Data.Migrations
                     b.Property<int>("Reviewee_id")
                         .HasColumnType("int");
 
-                    b.Property<int>("Reviewer_id")
-                        .HasColumnType("int");
+                    b.Property<string>("Reviewer_id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Review_id");
 
                     b.HasIndex("ApplicationID");
 
-                    b.HasIndex("ApplicationID1");
-
-                    b.HasIndex("Job_id");
-
-                    b.HasIndex("Reviewee_id");
+                    b.HasIndex("JobID");
 
                     b.HasIndex("Reviewer_id");
 
@@ -528,12 +796,9 @@ namespace SWork.Data.Migrations
 
                     b.Property<string>("SkillName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SkillID");
-
-                    b.HasIndex("SkillName")
-                        .IsUnique();
 
                     b.ToTable("Skills");
                 });
@@ -550,7 +815,7 @@ namespace SWork.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Date_of_birth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Major")
@@ -567,10 +832,11 @@ namespace SWork.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("Year_of_study")
+                    b.Property<int?>("YearOfStudy")
                         .HasColumnType("int");
 
                     b.HasKey("StudentID");
@@ -589,7 +855,7 @@ namespace SWork.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubscriptionID"));
 
-                    b.Property<DateTime>("Create_at")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -603,6 +869,7 @@ namespace SWork.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("SubscriptionName")
@@ -617,62 +884,6 @@ namespace SWork.Data.Migrations
                     b.ToTable("Subscriptions");
                 });
 
-            modelBuilder.Entity("SWork.Data.Entities.User", b =>
-                {
-                    b.Property<int>("UserID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
-
-                    b.Property<string>("Avatar_url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Create_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Full_name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("Is_active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Password_hash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone_number")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.Property<int?>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("Update_at")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("UserID");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("SWork.Data.Entities.Wallet", b =>
                 {
                     b.Property<int>("WalletID")
@@ -682,13 +893,15 @@ namespace SWork.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WalletID"));
 
                     b.Property<decimal>("Balance")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("Last_updated")
+                    b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("WalletID");
 
@@ -707,16 +920,17 @@ namespace SWork.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionID"));
 
                     b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("Created_at")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Transaction_type")
+                    b.Property<string>("TransactionType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -730,30 +944,81 @@ namespace SWork.Data.Migrations
                     b.ToTable("WalletTransactions");
                 });
 
-            modelBuilder.Entity("SkillStudent", b =>
+            modelBuilder.Entity("StudentSkill", b =>
                 {
-                    b.Property<int>("SkillsSkillID")
+                    b.Property<int>("StudentID")
                         .HasColumnType("int");
 
-                    b.Property<int>("StudentsStudentID")
+                    b.Property<int>("SkillID")
                         .HasColumnType("int");
 
-                    b.HasKey("SkillsSkillID", "StudentsStudentID");
+                    b.HasKey("StudentID", "SkillID");
 
-                    b.HasIndex("StudentsStudentID");
+                    b.HasIndex("SkillID");
 
-                    b.ToTable("SkillStudent");
+                    b.ToTable("StudentSkills", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Report", b =>
                 {
-                    b.HasOne("SWork.Data.Entities.User", "Reporter")
-                        .WithMany("Reports")
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", "User")
+                        .WithMany()
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Reporter");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SWork.Data.Entities.Application", b =>
@@ -761,13 +1026,13 @@ namespace SWork.Data.Migrations
                     b.HasOne("SWork.Data.Entities.Job", "Job")
                         .WithMany("Applications")
                         .HasForeignKey("JobID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SWork.Data.Entities.Resume", "Resume")
                         .WithMany("Applications")
                         .HasForeignKey("ResumeID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SWork.Data.Entities.Student", "Student")
@@ -785,7 +1050,7 @@ namespace SWork.Data.Migrations
 
             modelBuilder.Entity("SWork.Data.Entities.Employer", b =>
                 {
-                    b.HasOne("SWork.Data.Entities.User", "User")
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", "User")
                         .WithOne("Employer")
                         .HasForeignKey("SWork.Data.Entities.Employer", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -807,10 +1072,9 @@ namespace SWork.Data.Migrations
 
             modelBuilder.Entity("SWork.Data.Entities.Job", b =>
                 {
-                    b.HasOne("SWork.Data.Entities.JobCategory", "Category")
+                    b.HasOne("SWork.Data.Entities.JobCategory", "JobCategory")
                         .WithMany("Jobs")
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CategoryID");
 
                     b.HasOne("SWork.Data.Entities.Employer", "Employer")
                         .WithMany("Jobs")
@@ -819,17 +1083,12 @@ namespace SWork.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("SWork.Data.Entities.Subscription", "Subscription")
-                        .WithMany()
-                        .HasForeignKey("SubscriptionID")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("SWork.Data.Entities.Subscription", null)
                         .WithMany("Jobs")
-                        .HasForeignKey("SubscriptionID1");
-
-                    b.Navigation("Category");
+                        .HasForeignKey("SubscriptionID");
 
                     b.Navigation("Employer");
+
+                    b.Navigation("JobCategory");
 
                     b.Navigation("Subscription");
                 });
@@ -845,7 +1104,7 @@ namespace SWork.Data.Migrations
                     b.HasOne("SWork.Data.Entities.Student", "Student")
                         .WithMany("JobBookmarks")
                         .HasForeignKey("StudentID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Job");
@@ -855,9 +1114,20 @@ namespace SWork.Data.Migrations
 
             modelBuilder.Entity("SWork.Data.Entities.Notification", b =>
                 {
-                    b.HasOne("SWork.Data.Entities.User", "User")
-                        .WithMany("Notifications")
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", "User")
+                        .WithMany()
                         .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SWork.Data.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -885,26 +1155,15 @@ namespace SWork.Data.Migrations
             modelBuilder.Entity("SWork.Data.Entities.Review", b =>
                 {
                     b.HasOne("SWork.Data.Entities.Application", "Application")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("ApplicationID")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("SWork.Data.Entities.Application", null)
+                    b.HasOne("SWork.Data.Entities.Job", null)
                         .WithMany("Reviews")
-                        .HasForeignKey("ApplicationID1");
+                        .HasForeignKey("JobID");
 
-                    b.HasOne("SWork.Data.Entities.Job", "Job")
-                        .WithMany("Reviews")
-                        .HasForeignKey("Job_id")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("SWork.Data.Entities.User", "Reviewee")
-                        .WithMany()
-                        .HasForeignKey("Reviewee_id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SWork.Data.Entities.User", "Reviewer")
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", "Reviewer")
                         .WithMany()
                         .HasForeignKey("Reviewer_id")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -912,16 +1171,12 @@ namespace SWork.Data.Migrations
 
                     b.Navigation("Application");
 
-                    b.Navigation("Job");
-
-                    b.Navigation("Reviewee");
-
                     b.Navigation("Reviewer");
                 });
 
             modelBuilder.Entity("SWork.Data.Entities.Student", b =>
                 {
-                    b.HasOne("SWork.Data.Entities.User", "User")
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", "User")
                         .WithOne("Student")
                         .HasForeignKey("SWork.Data.Entities.Student", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -932,7 +1187,7 @@ namespace SWork.Data.Migrations
 
             modelBuilder.Entity("SWork.Data.Entities.Wallet", b =>
                 {
-                    b.HasOne("SWork.Data.Entities.User", "User")
+                    b.HasOne("SWork.Data.Entities.ApplicationUser", "User")
                         .WithOne("Wallet")
                         .HasForeignKey("SWork.Data.Entities.Wallet", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -952,17 +1207,17 @@ namespace SWork.Data.Migrations
                     b.Navigation("Wallet");
                 });
 
-            modelBuilder.Entity("SkillStudent", b =>
+            modelBuilder.Entity("StudentSkill", b =>
                 {
                     b.HasOne("SWork.Data.Entities.Skill", null)
                         .WithMany()
-                        .HasForeignKey("SkillsSkillID")
+                        .HasForeignKey("SkillID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SWork.Data.Entities.Student", null)
                         .WithMany()
-                        .HasForeignKey("StudentsStudentID")
+                        .HasForeignKey("StudentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -972,6 +1227,18 @@ namespace SWork.Data.Migrations
                     b.Navigation("Interviews");
 
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("SWork.Data.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("Employer")
+                        .IsRequired();
+
+                    b.Navigation("Student")
+                        .IsRequired();
+
+                    b.Navigation("Wallet")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SWork.Data.Entities.Employer", b =>
@@ -1015,22 +1282,6 @@ namespace SWork.Data.Migrations
             modelBuilder.Entity("SWork.Data.Entities.Subscription", b =>
                 {
                     b.Navigation("Jobs");
-                });
-
-            modelBuilder.Entity("SWork.Data.Entities.User", b =>
-                {
-                    b.Navigation("Employer")
-                        .IsRequired();
-
-                    b.Navigation("Notifications");
-
-                    b.Navigation("Reports");
-
-                    b.Navigation("Student")
-                        .IsRequired();
-
-                    b.Navigation("Wallet")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("SWork.Data.Entities.Wallet", b =>

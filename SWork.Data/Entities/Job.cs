@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.EntityFrameworkCore;
 
 namespace SWork.Data.Entities
 {
@@ -20,7 +21,8 @@ namespace SWork.Data.Entities
         public string Description { get; set; }
         public string Requirements { get; set; }
         public string Location { get; set; }
-        public decimal? Salary { get; set; }
+        [Precision(18, 2)]
+        public decimal Salary { get; set; }
         public string WorkingHours { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }

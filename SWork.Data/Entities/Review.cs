@@ -12,7 +12,7 @@ namespace SWork.Data.Entities
     {
         [Key]
         public int Review_id { get; set; }
-        public int Reviewer_id { get; set; }
+        public string Reviewer_id { get; set; }
         public int Reviewee_id { get; set; }
         public int? ApplicationID { get; set; }
         public int Rating { get; set; }
@@ -21,7 +21,7 @@ namespace SWork.Data.Entities
 
         // Navigation properties
         [ForeignKey("Reviewer_id")]
-        public virtual User Reviewer { get; set; }
+        public ApplicationUser  Reviewer { get; set; }
         [ForeignKey("ApplicationID")]
         public virtual Application Application { get; set; }
     }

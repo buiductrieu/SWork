@@ -12,7 +12,7 @@ namespace SWork.Data.Entities
     {
         [Key]
         public int EmployerID { get; set; }
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public string Company_name { get; set; }
         public string Industry { get; set; }
         public string CompanySize { get; set; }
@@ -22,7 +22,7 @@ namespace SWork.Data.Entities
 
         // Navigation properties
         [ForeignKey("UserID")]
-        public virtual User User { get; set; }
+        public ApplicationUser User { get; set; }
         public virtual ICollection<Job> Jobs { get; set; }
     }
 

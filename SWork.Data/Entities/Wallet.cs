@@ -12,13 +12,13 @@ namespace SWork.Data.Entities
     {
         [Key]
         public int WalletID { get; set; }
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public decimal Balance { get; set; } = 0;
         public DateTime LastUpdated { get; set; } = DateTime.Now;
 
         // Navigation properties
         [ForeignKey("UserID")]
-        public virtual User User { get; set; }
+        public ApplicationUser User { get; set; }
         public virtual ICollection<WalletTransaction> Transactions { get; set; }
     }
 }

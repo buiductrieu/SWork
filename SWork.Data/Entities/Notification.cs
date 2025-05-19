@@ -12,7 +12,7 @@ namespace SWork.Data.Entities
     {
         [Key]
         public int NotificationID { get; set; }
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public string Title { get; set; }
         public string Message { get; set; }
         public bool IsRead { get; set; } = false;
@@ -20,6 +20,6 @@ namespace SWork.Data.Entities
 
         // Navigation properties
         [ForeignKey("UserID")]
-        public virtual User User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

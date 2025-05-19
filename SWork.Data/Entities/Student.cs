@@ -13,7 +13,7 @@ namespace SWork.Data.Entities
     {
         [Key]
         public int StudentID { get; set; }
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public string University { get; set; }
         public string Major { get; set; }
         public int? YearOfStudy { get; set; }
@@ -24,7 +24,7 @@ namespace SWork.Data.Entities
 
         // Navigation properties
         [ForeignKey("UserID")]
-        public virtual User User { get; set; }
+        public ApplicationUser User { get; set; }
         public virtual ICollection<Resume> Resumes { get; set; }
         public virtual ICollection<Application> Applications { get; set; }
         public virtual ICollection<JobBookmark> JobBookmarks { get; set; }
