@@ -11,8 +11,4 @@
     <ProjectReference Include="..\SWork.RepositoryContract\SWork.RepositoryContract.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
 </Project>
