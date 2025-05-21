@@ -25,8 +25,4 @@
     <ProjectReference Include="..\SWork.Service\SWork.Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

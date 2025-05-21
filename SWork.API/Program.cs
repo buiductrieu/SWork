@@ -5,6 +5,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SWork.Data.Entities;
 using SWork.Data.Models;
+using SWork.ServiceContract.Interfaces;
+using SWork.Service.Services;
+using SWork.RepositoryContract.Interfaces;
+using SWork.Repository;
+using SWork.Repository.Repository;
+using AutoMapper;
+using SWork.Service;
+using SWork.Common.Helper;
 
 namespace SWork.API
 {
@@ -21,6 +29,10 @@ namespace SWork.API
             builder.Services.AddDbContext<SWorkDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // Add Email Settings
+            builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("EmailSettings"));
+
+            builder.Services.AddRepository().AddService();
             // Add Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
@@ -73,6 +85,9 @@ namespace SWork.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddControllers();
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             var app = builder.Build();
 
