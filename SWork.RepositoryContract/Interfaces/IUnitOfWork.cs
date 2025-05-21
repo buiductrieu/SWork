@@ -9,6 +9,7 @@ namespace SWork.RepositoryContract.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IUserRepository UserRepository { get; }
+        IRefreshTokenRepository RefreshTokenRepository { get; }
         Task SaveChanges();
     }
 }

@@ -15,14 +15,17 @@ namespace SWork.Repository.Repository
         private readonly SWorkDbContext _context;
 
         public IUserRepository UserRepository { get; }
+        public IRefreshTokenRepository RefreshTokenRepository { get; }
         public UserManager<ApplicationUser> UserManager { get; }
 
-        public UnitOfWork(SWorkDbContext context, IUserRepository userRepository, UserManager<ApplicationUser> userManager)
+        public UnitOfWork(SWorkDbContext context, IUserRepository userRepository, UserManager<ApplicationUser> userManager, IRefreshTokenRepository refreshTokenRepository)
         {
             _context = context;
             UserRepository = userRepository;
             UserManager = userManager;
+            RefreshTokenRepository = refreshTokenRepository;
         }
+
         // Implement repository properties here
         private bool disposed = false;
         public void Save()

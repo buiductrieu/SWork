@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using SWork.Data.DTO;
 using SWork.Data.Entities;
 using SWork.RepositoryContract.Interfaces;
@@ -86,5 +90,85 @@ namespace SWork.Service.Services
             var result = await _userManager.ConfirmEmailAsync(user, token);
             return result.Succeeded;
         }
+
+        public async Task<RefreshToken> GetRefreshTokenAsync(ApplicationUser user)
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                UserId = user.Id,
+                Expries = DateTime.UtcNow.AddDays(7),//Refresh hết hạn sau 7 ngày
+                Created = DateTime.UtcNow
+            };
+            await _unitOfWork.RefreshTokenRepository.AddAsync(refreshToken);
+            await _unitOfWork.SaveChanges();
+            return refreshToken;
+        }
+
+        private async Task<string> GenerateJwtToken(ApplicationUser user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id), //Thông tin chủ thể của object: tên đăng nhập của user
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),// unique identifier giúp phân biệt các token khác nhau, Sử dụng NewGuid() để tạo ra một giá trị đi nhất
+                new Claim(ClaimTypes.NameIdentifier, user.Id), //Id để xác định người dùng 1 cách duy nhất 
+                new Claim(ClaimTypes.Email, user.Email),
+            };
+
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        public async Task<LoginResponseDTO> LoginAsync(LoginRequestDTO loginRequestDTO)
+        {
+            var user = await _userManager.FindByEmailAsync(loginRequestDTO.Username);
+            if (user == null)
+                throw new BadHttpRequestException("Username or password is incorrect!");
+
+            var isValid = await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
+
+            if (!isValid)
+                throw new BadHttpRequestException("Username or password is incorrect!");
+
+            //if (!user.IsActive)
+            //    throw new BadHttpRequestException("Your account is banned!");
+
+            //if (!user.EmailConfirmed)
+            //    return null;
+
+
+            var token = await GenerateJwtToken(user);
+            var refreshToken = await GetRefreshTokenAsync(user);
+            var userDTO = _mapper.Map<UserDTO>(user);
+
+            var role = await _userManager.GetRolesAsync(user);
+
+            LoginResponseDTO responseDTO = new()
+            {
+                User = userDTO,
+                Token = token,
+                RefreshToken = refreshToken.Token,
+                Role = role
+            };
+
+            return responseDTO;
+        }
+
+
     }
 }

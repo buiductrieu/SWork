@@ -89,5 +89,42 @@ namespace SWork.API.Controllers
                 return BadRequest(response);
             }
         }
+
+        /// <summary>
+        /// Login for user
+        /// </summary>
+        /// <param name="loginRequestDTO"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
+        {
+            var loginResult = await _authService.LoginAsync(loginRequestDTO);
+
+            if (loginResult == null)
+            {
+                var response = new APIResponse
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    IsSuccess = false,
+                    ErrorMessages = new List<string> { "Please confirm your email before logging in." }
+                };
+
+                return Unauthorized(response);
+            }
+            var successResponse = new APIResponse
+            {
+                IsSuccess = true,
+                StatusCode = HttpStatusCode.OK,
+                Result = loginResult
+            };
+
+            return Ok(successResponse);
+
+        }
     }
 }

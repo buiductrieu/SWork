@@ -5,19 +5,17 @@ namespace SWork.Data.Entities
 {
     public class RefreshToken
     {
-        [Key]
+        public int Id { get; set; }
         public string Token { get; set; }
         public string UserId { get; set; }
-        public DateTime ExpiryDate { get; set; }
-        public bool IsRevoked { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string CreatedByIp { get; set; }
-        public DateTime? RevokedDate { get; set; }
-        public string? RevokedByIp { get; set; }
-        public string? ReplacedByToken { get; set; }
-        public string? ReasonRevoked { get; set; }
+        public DateTime Expries { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public virtual ApplicationUser User { get; set; }
+        public bool IsExpried => DateTime.Now >= Expries;
+
+        public DateTime Created { get; set; }
+        public DateTime? Revoked { get; set; }
+        public bool IsActive => Revoked == null && !IsExpried;
+
+        public ApplicationUser User { get; set; }
     }
 } 

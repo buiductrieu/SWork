@@ -12,5 +12,6 @@ namespace SWork.ServiceContract.Interfaces
     {
         Task<ApplicationUser> RegisterAsync(UserRegisterDTO dto);
         Task<bool> ConfirmEmail(string username, string token);
+        Task<LoginResponseDTO> LoginAsync(LoginRequestDTO loginRequestDTO);
     }
 }
