@@ -11,9 +11,9 @@ namespace SWork.Data.Entities
 {
     public class Student
     {
-        [Key]
-        public int StudentID { get; set; }
-        public string UserID { get; set; }
+        public int Id { get; set; }
+        [ForeignKey("ApplicationUser")]
+        public string? UserID { get; set; }
         public string University { get; set; }
         public string Major { get; set; }
         public int? YearOfStudy { get; set; }

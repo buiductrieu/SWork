@@ -2,17 +2,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
+using Microsoft.OpenApi.Models;
 using SWork.Data.Entities;
 using SWork.Data.Models;
-using SWork.ServiceContract.Interfaces;
-using SWork.Service.Services;
-using SWork.RepositoryContract.Interfaces;
 using SWork.Repository;
-using SWork.Repository.Repository;
-using AutoMapper;
+using SWork.RepositoryContract.Interfaces;
 using SWork.Service;
+using SWork.Service.Services;
+using SWork.ServiceContract.Interfaces;
 using SWork.Common.Helper;
+using AutoMapper;
 
 namespace SWork.API
 {
@@ -22,39 +23,45 @@ namespace SWork.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Get version
+            var fullVersion = Assembly.GetExecutingAssembly()
+                                      .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                                      .InformationalVersion ?? "1.0.0";
+            var version = fullVersion.Split('+')[0];
+
+            // Add Controllers
             builder.Services.AddControllers();
 
-            // Add DbContext
+            // DbContext
             builder.Services.AddDbContext<SWorkDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Add Email Settings
+            // Email Settings
             builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("EmailSettings"));
 
+            // Repositories & Services
             builder.Services.AddRepository().AddService();
-            // Add Identity
+
+            // Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                // Password settings
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequiredLength = 6;
 
-                // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 
-                // User settings
                 options.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<SWorkDbContext>()
             .AddDefaultTokenProviders();
-            // Add JWT Configuration
-            var jwtSecret = builder.Configuration["JWT:Key"]; ;
+
+            // JWT Authentication
+            var jwtSecret = builder.Configuration["JWT:Key"];
             if (string.IsNullOrEmpty(jwtSecret))
             {
                 throw new ArgumentNullException(nameof(jwtSecret), "JWT Secret cannot be null or empty.");
@@ -65,7 +72,8 @@ namespace SWork.API
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
+            })
+            .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
@@ -75,37 +83,63 @@ namespace SWork.API
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
                 };
+            });
+
+            builder.Services.AddAuthorization();
+
+            // AutoMapper
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+            // Swagger config
+            builder.Services.AddSwaggerGen(opt =>
+            {
+                opt.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "SWork API - " + version,
+                    Version = version
+                });
+
+                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer"
+                });
+
+                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
 
             });
 
-            // Add authorization
-            builder.Services.AddAuthorization();
-
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            builder.Services.AddControllers();
-            builder.Services.AddAutoMapper(typeof(MappingProfile));
-
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            // Swagger works in ALL environments
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", $"SWork API {version}");
+                c.RoutePrefix = "swagger"; // URL: /swagger
+            });
 
             app.UseHttpsRedirection();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();

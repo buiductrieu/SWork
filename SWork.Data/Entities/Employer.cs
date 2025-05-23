@@ -10,9 +10,9 @@ namespace SWork.Data.Entities
 {
     public class Employer
     {
-        [Key]
-        public int EmployerID { get; set; }
-        public string UserID { get; set; }
+        public int Id { get; set; }
+        [ForeignKey("ApplicationUser")]
+        public string? UserID { get; set; }
         public string Company_name { get; set; }
         public string Industry { get; set; }
         public string CompanySize { get; set; }
