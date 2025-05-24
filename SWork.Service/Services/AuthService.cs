@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SWork.Data.DTO;
 using SWork.Data.Entities;
-using SWork.RepositoryContract.Interfaces;
+using SWork.RepositoryContract.IUnitOfWork;
 using SWork.ServiceContract.Interfaces;
 
 namespace SWork.Service.Services

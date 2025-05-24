@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using SWork.Common.Helper;
 using SWork.Data.DTO;
-using SWork.RepositoryContract.Interfaces;
-using MailKit.Net.Smtp;
 
 namespace SWork.Repository.Repository
 {

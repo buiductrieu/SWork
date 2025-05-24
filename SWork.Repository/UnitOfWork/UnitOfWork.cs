@@ -6,13 +6,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using SWork.Data.Entities;
 using SWork.Data.Models;
+using SWork.Repository.Basic;
+using SWork.RepositoryContract.Basic;
 using SWork.RepositoryContract.Interfaces;
+using SWork.RepositoryContract.IUnitOfWork;
 
-namespace SWork.Repository.Repository
+namespace SWork.Repository.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly SWorkDbContext _context;
+        private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
 
         public IUserRepository UserRepository { get; }
         public IRefreshTokenRepository RefreshTokenRepository { get; }
@@ -48,9 +52,22 @@ namespace SWork.Repository.Repository
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        public async Task SaveChanges()
+
+        public IGenericRepository<T> GenericRepository<T>() where T : class
         {
-            await _context.SaveChangesAsync();
+            if (_repositories.TryGetValue(typeof(T), out var repository))
+            {
+                return (IGenericRepository<T>)repository;
+            }
+
+            var newRepository = new GenericRepository<T>(_context);
+            _repositories.Add(typeof(T), newRepository);
+            return newRepository;
+        }
+
+        public Task<int> SaveChangeAsync()
+        {
+            return _context.SaveChangesAsync();
         }
     }
 }

@@ -14,6 +14,7 @@ using SWork.Service.Services;
 using SWork.ServiceContract.Interfaces;
 using SWork.Common.Helper;
 using AutoMapper;
+using SWork.API.DependencyInjection;
 
 namespace SWork.API
 {
@@ -40,7 +41,7 @@ namespace SWork.API
             builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("EmailSettings"));
 
             // Repositories & Services
-            builder.Services.AddRepository().AddService();
+            builder.Services.AddSWorkDependencies();
 
             // Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

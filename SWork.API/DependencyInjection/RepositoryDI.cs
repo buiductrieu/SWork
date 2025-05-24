@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using SWork.Common.Helper;
+﻿using SWork.Common.Helper;
 using SWork.Repository.Repository;
+using SWork.Repository.UnitOfWork;
 using SWork.RepositoryContract.Interfaces;
+using SWork.RepositoryContract.IUnitOfWork;
+using SWork.Service.Services;
+using SWork.ServiceContract.Interfaces;
 
-namespace SWork.Repository
+namespace SWork.API.DependencyInjection
 {
-    public static class DependencyInjcection
+    public static class RepositoryDI
     {
-        public static IServiceCollection AddRepository(this IServiceCollection services)
+        public static IServiceCollection AddRepositoryDependencies(this IServiceCollection services)
         {
+
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IEmailRepository, EmailRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
@@ -22,6 +21,5 @@ namespace SWork.Repository
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             return services;
         }
-        
     }
 }

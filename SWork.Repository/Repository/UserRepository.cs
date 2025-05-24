@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SWork.Data.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using SWork.Data.Models;
-using SWork.RepositoryContract.Interfaces;
+﻿using Microsoft.AspNetCore.Identity;
+
 
 namespace SWork.Repository.Repository
 {
