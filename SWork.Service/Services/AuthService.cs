@@ -79,7 +79,7 @@ namespace SWork.Service.Services
                 throw new BadHttpRequestException("Vai trò không hợp lệ");
             }
 
-            await _unitOfWork.SaveChanges();
+            await _unitOfWork.SaveChangeAsync();
 
             return user;
         }
@@ -101,7 +101,7 @@ namespace SWork.Service.Services
                 Created = DateTime.UtcNow
             };
             await _unitOfWork.RefreshTokenRepository.AddAsync(refreshToken);
-            await _unitOfWork.SaveChanges();
+            await _unitOfWork.SaveChangeAsync();
             return refreshToken;
         }
 
