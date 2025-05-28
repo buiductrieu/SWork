@@ -48,7 +48,7 @@ namespace SWork.API.Controllers
 
             var result = await _authService.RegisterAsync(dto);
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(result);
-            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Auth", new { token = token, username = result.UserName }, Request.Scheme);
+            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Auth", new { token = token, email = result.Email }, Request.Scheme);
 
             _emailService.SendEmailConfirmation(result.Email, confirmationLink);
 
@@ -64,12 +64,12 @@ namespace SWork.API.Controllers
 
         [HttpGet("confirm-email")]
         [AllowAnonymous]
-        public async Task<ActionResult<APIResponse>> ConfirmEmail([FromQuery] string token, [FromQuery] string username)
+        public async Task<ActionResult<APIResponse>> ConfirmEmail([FromQuery] string token, [FromQuery] string email)
         {
             var response = new APIResponse();
             try
             {
-                var result = await _authService.ConfirmEmail(username, token);
+                var result = await _authService.ConfirmEmail(email, token);
                 if (result)
                 {
                     response.IsSuccess = true;
@@ -124,7 +124,6 @@ namespace SWork.API.Controllers
             };
 
             return Ok(successResponse);
-
         }
     }
 }
