@@ -14,4 +14,8 @@
     <ProjectReference Include="..\SWork.Data\SWork.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Enums\" />
+  </ItemGroup>
+
 </Project>

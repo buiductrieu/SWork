@@ -7,14 +7,9 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using SWork.Data.Entities;
 using SWork.Data.Models;
-using SWork.Repository;
-using SWork.RepositoryContract.Interfaces;
-using SWork.Service;
-using SWork.Service.Services;
-using SWork.ServiceContract.Interfaces;
 using SWork.Common.Helper;
-using AutoMapper;
 using SWork.API.DependencyInjection;
+using SWork.Service.CloudinaryService;
 
 namespace SWork.API
 {
@@ -23,7 +18,6 @@ namespace SWork.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Get version
             var fullVersion = Assembly.GetExecutingAssembly()
                                       .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
@@ -127,6 +121,19 @@ namespace SWork.API
                 });
 
             });
+
+
+            // config appsettings.Development
+            builder.Configuration
+                   .SetBasePath(Directory.GetCurrentDirectory())
+                   .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                   .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                   .AddEnvironmentVariables();
+
+            // config CloundinarySettings
+            builder.Services.Configure<CloudinarySettings>(
+                builder.Configuration.GetSection("CloudinarySettings"));
+
 
             var app = builder.Build();
 

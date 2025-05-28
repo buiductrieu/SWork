@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SWork.Data.Entities
@@ -20,6 +21,7 @@ namespace SWork.Data.Entities
         public DateTime Update_at { get; set; } = DateTime.Now;
 
         // Navigation properties
+        [JsonIgnore]
         public virtual ICollection<Job> Jobs { get; set; }
     }
 }

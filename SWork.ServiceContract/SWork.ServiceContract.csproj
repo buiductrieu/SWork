@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CloudinaryDotNet" Version="1.27.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SWork.Data\SWork.Data.csproj" />
     <ProjectReference Include="..\SWork.RepositoryContract\SWork.RepositoryContract.csproj" />
   </ItemGroup>

@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using SWork.Data.DTO;
+using SWork.Data.DTO.JobDTO;
+using SWork.Data.DTO.SubDTO;
 using SWork.Data.Entities;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -44,6 +46,9 @@ namespace SWork.Common.Helper
 
             CreateMap<UserRegisterDTO, ApplicationUser>();
             CreateMap<ApplicationUser, UserResponseDTO>();
+            CreateMap<CreateJobDTO, Job>().ReverseMap();
+            CreateMap<SubDTO, Subscription>().ReverseMap();
+            CreateMap<JobCategoryDTO, JobCategory>().ReverseMap();
         }
        
     }
