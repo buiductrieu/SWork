@@ -1,10 +1,8 @@
-﻿using SWork.Common.Helper;
-using SWork.Repository.Repository;
+﻿using SWork.Repository.Repository;
 using SWork.Repository.UnitOfWork;
 using SWork.RepositoryContract.Interfaces;
 using SWork.RepositoryContract.IUnitOfWork;
-using SWork.Service.Services;
-using SWork.ServiceContract.Interfaces;
+
 
 namespace SWork.API.DependencyInjection
 {
@@ -13,10 +11,17 @@ namespace SWork.API.DependencyInjection
         public static IServiceCollection AddRepositoryDependencies(this IServiceCollection services)
         {
 
+            //DI Helpers
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IEmailRepository, EmailRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+
+            // DI Entities
+            services.AddTransient<IJobCategoryRepository, JobCategoryRepository>();
+            services.AddTransient<IJobRepository, JobRepository>();
+            services.AddTransient<ISubscriptionRepository, SubscriptionRepository>();
+
             // DI UnitOfWork
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             return services;

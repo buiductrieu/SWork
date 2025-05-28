@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using SWork.Data.Entities;
-using SWork.Data.Models;
-using SWork.Repository.Basic;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Storage;
 using SWork.RepositoryContract.Basic;
-using SWork.RepositoryContract.Interfaces;
 using SWork.RepositoryContract.IUnitOfWork;
 
 namespace SWork.Repository.UnitOfWork
@@ -17,7 +9,8 @@ namespace SWork.Repository.UnitOfWork
     {
         private readonly SWorkDbContext _context;
         private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
-
+        private bool disposed = false;
+        private IDbContextTransaction? _transaction;
         public IUserRepository UserRepository { get; }
         public IRefreshTokenRepository RefreshTokenRepository { get; }
         public UserManager<ApplicationUser> UserManager { get; }
@@ -31,7 +24,7 @@ namespace SWork.Repository.UnitOfWork
         }
 
         // Implement repository properties here
-        private bool disposed = false;
+
         public void Save()
         {
             _context.SaveChanges();
@@ -65,9 +58,37 @@ namespace SWork.Repository.UnitOfWork
             return newRepository;
         }
 
+        public IJobCategoryRepository JobCategoryRepository { get; }
+        public IJobRepository JobRepository { get; }
+        public ISubscriptionRepository SubscriptionRepository { get; }
+
         public Task<int> SaveChangeAsync()
         {
             return _context.SaveChangesAsync();
         }
+        public async Task BeginTransactionAsync() //Ensure multiple operations complete simultaneously or rollback completely if there is an error
+        {
+            _transaction = await _context.Database.BeginTransactionAsync();
+        }
+
+        public async Task CommitTransactionAsync() //End the transaction and commit the changes.
+        {
+            if(_transaction != null)
+            {
+                await _transaction.CommitAsync();
+                await _transaction.DisposeAsync();
+            }
+        }
+
+        public async Task RollbackTransactionAsync() //Restore the state before the transaction if there is an error.
+        {
+            if( _transaction != null)
+            {
+                await _transaction.RollbackAsync();
+                await _transaction.DisposeAsync();
+            }
+        }
+
+      
     }
 }

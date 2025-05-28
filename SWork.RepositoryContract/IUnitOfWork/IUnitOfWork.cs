@@ -9,6 +9,9 @@ namespace SWork.RepositoryContract.IUnitOfWork
         IGenericRepository<T> GenericRepository<T>() where T : class;
         IUserRepository UserRepository { get; }
         IRefreshTokenRepository RefreshTokenRepository { get; }
+        Task BeginTransactionAsync();
+        Task CommitTransactionAsync();
+        Task RollbackTransactionAsync();
         Task<int> SaveChangeAsync();
     }
 }
