@@ -1,6 +1,6 @@
 ﻿
 using SWork.Common.Helper;
-using SWork.Service.CloudinaryService;
+//using SWork.Service.CloudinaryService;
 using SWork.Service.Services;
 using SWork.ServiceContract.Interfaces;
 
