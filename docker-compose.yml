@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=tcp:sworkdb.database.windows.net,1433;Initial Catalog=sworkdb;Persist Security Info=False;User ID=sqladmin;Password=Trieu@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+      
+      # JWT Settings
+      - JWT__Key=${JWT_KEY}
+      - JWT__Issuer=${JWT_ISSUER}
+      - JWT__Audience=${JWT_AUDIENCE}
+      
+      # Email Settings
+      - EmailSettings__Email=${EMAIL_ADDRESS}
+      - EmailSettings__Password=${EMAIL_PASSWORD}
+      - EmailSettings__Host=${EMAIL_HOST}
+      - EmailSettings__DisplayName=${EMAIL_DISPLAY_NAME}
+      - EmailSettings__Port=${EMAIL_PORT}
+      
+      # Cloudinary Settings
+      - CloudinarySettings__Cloudname=${CLOUDINARY_CLOUDNAME}
+      - CloudinarySettings__ApiKey=${CLOUDINARY_API_KEY}
+      - CloudinarySettings__ApiSecret=${CLOUDINARY_API_SECRET}
+
+      # Azure Key Vault Settings
+      - AzureKeyVault__Name=${AZURE_KEY_VAULT_NAME}
+      - AzureKeyVault__TenantId=${AZURE_TENANT_ID}
+      - AzureKeyVault__ClientId=${AZURE_CLIENT_ID}
+      - AzureKeyVault__ClientSecret=${AZURE_CLIENT_SECRET}
+    restart: unless-stopped
+
+volumes:
+  sqldata: 
