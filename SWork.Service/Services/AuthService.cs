@@ -84,9 +84,9 @@ namespace SWork.Service.Services
             return user;
         }
 
-        public async Task<bool> ConfirmEmail(string username, string token)
+        public async Task<bool> ConfirmEmail(string email, string token)
         {
-            var user = await _userManager.FindByEmailAsync(username) ?? throw (new BadHttpRequestException("User not found"));
+            var user = await _userManager.FindByEmailAsync(email) ?? throw (new BadHttpRequestException("User not found"));
             var result = await _userManager.ConfirmEmailAsync(user, token);
             return result.Succeeded;
         }
