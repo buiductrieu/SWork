@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using SWork.Common;
 using SWork.Data.DTO.JobDTO;
-using SWork.Data.Entities;
 using SWork.ServiceContract.ICloudinaryService;
-using System.Linq.Expressions;
 
 namespace SWork.Service.Services
 {
@@ -12,7 +9,12 @@ namespace SWork.Service.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ICloudinaryImageService _cloudinaryImageService = cloudImageService;
-        public async Task<Pagination<Job>> GetPaginatedJobAsync(int pageIndex, int pageSize, Expression<Func<Job, bool>>? predicate = null, Expression<Func<Job, object>>? orderBy = null, bool isDescending = false)
+        public async Task<Pagination<Job>> GetPaginatedJobAsync(
+            int pageIndex,
+            int pageSize,
+            Expression<Func<Job, bool>>? predicate = null,
+            Expression<Func<Job, object>>? orderBy = null,
+            bool isDescending = false)
         {
             try
             {

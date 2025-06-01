@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SWork.Data.DTO.SubDTO;
-using SWork.Data.Entities;
+﻿
 
 namespace SWork.Service.Services
 {

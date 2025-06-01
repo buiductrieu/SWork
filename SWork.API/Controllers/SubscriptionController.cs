@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWork.Data.DTO.SubDTO;
-using SWork.Service.Services;
 using SWork.ServiceContract.Interfaces;
 
 namespace SWork.API.Controllers

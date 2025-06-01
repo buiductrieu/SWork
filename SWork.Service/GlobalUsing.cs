@@ -1,3 +1,9 @@
 ﻿global using AutoMapper;
 global using SWork.RepositoryContract.IUnitOfWork;
 global using SWork.ServiceContract.Interfaces;
+global using SWork.Common;
+global using SWork.Data.DTO.CVDTO;
+global using SWork.Data.Entities;
+global using System.Linq.Expressions;
+global using Microsoft.EntityFrameworkCore;
+global using SWork.Data.DTO.SubDTO;

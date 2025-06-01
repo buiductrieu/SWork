@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SWork.Data.DTO;
-using SWork.Data.Entities;
-using SWork.RepositoryContract.IUnitOfWork;
-using SWork.ServiceContract.Interfaces;
 
 namespace SWork.Service.Services
 {

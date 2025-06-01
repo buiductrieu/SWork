@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using SWork.Data.DTO;
+using SWork.Data.DTO.CVDTO;
 using SWork.Data.DTO.JobDTO;
 using SWork.Data.DTO.SubDTO;
 using SWork.Data.Entities;
@@ -49,6 +50,18 @@ namespace SWork.Common.Helper
             CreateMap<CreateJobDTO, Job>().ReverseMap();
             CreateMap<SubDTO, Subscription>().ReverseMap();
             CreateMap<JobCategoryDTO, JobCategory>().ReverseMap();
+
+            //Resum
+            CreateMap<TemplateResumeDTO, ResumeTemplate>()
+                  .ForMember(dest => dest.TemplateName, opt => opt.MapFrom(src => src.TemplateName))
+                  .ForMember(dest => dest.TemplatePreviewURL, opt => opt.MapFrom(src => src.TemplatePreviewURL))
+                  .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+                  .ReverseMap();
+
+            CreateMap<UpdateResumeDTO, Resume>()
+                
+                .ReverseMap();
+            CreateMap<CreateResumeDTO, Resume>().ReverseMap();
         }
        
     }
