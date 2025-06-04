@@ -126,5 +126,15 @@ namespace SWork.API.Controllers
 
             return Ok(successResponse);
         }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequestDTO dto)
+        {
+            if (string.IsNullOrEmpty(dto.RefreshToken))
+                return BadRequest("Refresh token is required");
+            await _authService.LogoutAsync(dto.RefreshToken);
+            return Ok(new { message = "Logout successful" });
+        }
     }
 }

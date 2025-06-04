@@ -166,6 +166,13 @@ namespace SWork.Service.Services
             return responseDTO;
         }
 
-
+        public async Task LogoutAsync(string refreshToken)
+        {
+            var token = await _unitOfWork.RefreshTokenRepository.GetRefreshTokenAsync(refreshToken);
+            if (token == null)
+                throw new Exception("Invalid refresh token");
+            token.Revoked = DateTime.UtcNow;
+            await _unitOfWork.SaveChangeAsync();
+        }
     }
 }

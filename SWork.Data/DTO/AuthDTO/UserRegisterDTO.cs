@@ -24,6 +24,11 @@ namespace SWork.Data.DTO.UserDTO
             ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")]
         public string Password { get; set; }
 
+        [Required]
+        [DataType(DataType.Password)]
+        [Compare("Password", ErrorMessage = "Password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+
         [Required(ErrorMessage = "First name is required")]
         [StringLength(50, ErrorMessage = "First name must not exceed 50 characters")]
         public string FirstName { get; set; }
