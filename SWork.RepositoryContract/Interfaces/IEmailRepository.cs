@@ -1,5 +1,4 @@
-﻿
-using SWork.Data.DTO;
+﻿using SWork.Data.DTO.AuthDTO;
 
 namespace SWork.RepositoryContract.Interfaces
 {

@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SWork.Data.DTO;
+using SWork.Data.DTO.AuthDTO;
+using SWork.Data.DTO.UserDTO;
+using SWork.Data.Entities;
+using SWork.RepositoryContract.IUnitOfWork;
+using SWork.ServiceContract.Interfaces;
 
 namespace SWork.Service.Services
 {

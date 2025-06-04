@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.Extensions.Configuration;
 using SWork.Data.DTO;
+using SWork.Data.DTO.AuthDTO;
+using SWork.Data.Entities;
 using SWork.RepositoryContract.Interfaces;
 
 namespace SWork.Service.Services

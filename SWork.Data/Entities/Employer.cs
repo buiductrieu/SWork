@@ -6,7 +6,8 @@ namespace SWork.Data.Entities
 {
     public class Employer
     {
-        public int Id { get; set; }
+        [Key]
+        public int EmployerID { get; set; }
         [ForeignKey("ApplicationUser")]
         public string? UserID { get; set; }
         public string Company_name { get; set; }

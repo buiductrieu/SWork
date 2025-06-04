@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace SWork.Data.DTO
+namespace SWork.Data.DTO.UserDTO
 {
     public class UserResponseDTO
     {
