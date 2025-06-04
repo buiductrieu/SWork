@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWork.Data.DTO
+namespace SWork.Data.DTO.AuthDTO
 {
     public class LoginRequestDTO
     {
