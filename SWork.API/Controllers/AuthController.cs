@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SWork.Common.Helper;
-using SWork.Data.DTO;
 using SWork.Data.Entities;
 using SWork.ServiceContract.Interfaces;
 using AutoMapper;
+using SWork.Data.DTO.UserDTO;
+using SWork.Data.DTO.AuthDTO;
 
 namespace SWork.API.Controllers
 {

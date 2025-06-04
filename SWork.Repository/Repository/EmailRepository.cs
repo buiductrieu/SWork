@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using SWork.Common.Helper;
-using SWork.Data.DTO;
+using SWork.Data.DTO.AuthDTO;
 
 namespace SWork.Repository.Repository
 {
