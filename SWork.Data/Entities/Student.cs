@@ -11,7 +11,8 @@ namespace SWork.Data.Entities
 {
     public class Student
     {
-        public int Id { get; set; }
+        [Key]
+        public int StudentID { get; set; }
         [ForeignKey("ApplicationUser")]
         public string? UserID { get; set; }
         public string University { get; set; }
@@ -20,7 +21,6 @@ namespace SWork.Data.Entities
         public DateTime? DateOfBirth { get; set; }
         public string Bio { get; set; }
         public int? SkillID { get; set; }
-        public int? ResumeID { get; set; }
 
         // Navigation properties
         [ForeignKey("UserID")]
