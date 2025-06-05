@@ -8,13 +8,6 @@ namespace SWork.Service.Services
         private readonly IMapper _mapper = mapper;
         public async Task CreateResumeAsync(CreateResumeDTO resumDto)
         {
-            if (resumDto.TemplateID.HasValue)
-            {
-                var templateExists = await _unitOfWork.GenericRepository<ResumeTemplate>().GetByIdAsync(resumDto.TemplateID.Value);
-                if (templateExists == null)
-                    throw new BadHttpRequestException("Selected template does not exist.");
-            }
-
             var resum = _mapper.Map<Resume>(resumDto);
             await _unitOfWork.BeginTransactionAsync();
             try
@@ -66,7 +59,7 @@ namespace SWork.Service.Services
         {
 
             Expression<Func<Resume, bool>> predicate = resume =>
-                (string.IsNullOrEmpty(nameResume) || resume.ResumeTemplate.TemplateName.Contains(nameResume)) &&
+                (string.IsNullOrEmpty(nameResume) || resume.ResumeType.Contains(nameResume)) &&
                  (!studentId.HasValue || resume.StudentID == studentId.Value);
 
             var result = await _unitOfWork.GenericRepository<Resume>().GetPaginationAsync(

@@ -16,7 +16,7 @@ namespace SWork.ServiceContract.Interfaces
         Task<StudentResponseDTO> CreateStudentAsync(StudentCreateDTO studentDto, string userId);
         Task<StudentResponseDTO> UpdateStudentAsync(int id, StudentCreateDTO studentDto, string userId);
         Task<bool> DeleteStudentAsync(int id);
-        Task<IEnumerable<StudentResponseDTO>> GetStudentsBySkillAsync(int skillId);
+        Task<IEnumerable<StudentResponseDTO>> GetStudentsBySkillAsync(string skill);
         Task<IEnumerable<StudentResponseDTO>> GetStudentsByUniversityAsync(string university);
         Task<IEnumerable<StudentResponseDTO>> GetStudentsByMajorAsync(string major);
     }

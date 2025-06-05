@@ -12,7 +12,4 @@ public class StudentResponseDTO
     public int? YearOfStudy { get; set; }
     public DateTime? DateOfBirth { get; set; }
     public string Bio { get; set; }
-    public int? SkillID { get; set; }
-    public List<int>? SkillIDs { get; set; } // Nếu cần trả về danh sách kỹ năng
-    // Có thể bổ sung các trường khác nếu cần
 } 

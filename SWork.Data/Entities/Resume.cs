@@ -11,7 +11,6 @@ namespace SWork.Data.Entities
         public int StudentID { get; set; }
         public string ResumeType { get; set; } // 'UPLOADED', 'CREATED'
         public string FileURL { get; set; }
-        public int? TemplateID { get; set; }
         public bool IsDefault { get; set; } = false;
         public string FullName { get; set; }
         public string JobTitle { get; set; }
@@ -31,8 +30,6 @@ namespace SWork.Data.Entities
         // Navigation properties
         [ForeignKey("StudentID")]
         public virtual Student Student { get; set; }
-        [ForeignKey("TemplateID")]
-        public virtual ResumeTemplate ResumeTemplate { get; set; }
         public virtual ICollection<Application> Applications { get; set; }
     }
 }

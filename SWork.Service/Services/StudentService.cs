@@ -18,7 +18,6 @@ namespace SWork.Service.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IGenericRepository<Student> _studentRepository;
-        private readonly IGenericRepository<Skill> _skillRepository;
         private readonly IGenericRepository<Resume> _resumeRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -33,7 +32,6 @@ namespace SWork.Service.Services
             _mapper = mapper;
             _userManager = userManager;
             _studentRepository = _unitOfWork.GenericRepository<Student>();
-            _skillRepository = _unitOfWork.GenericRepository<Skill>();
             _resumeRepository = _unitOfWork.GenericRepository<Resume>();
         }
 
@@ -89,22 +87,10 @@ namespace SWork.Service.Services
             if (existingStudent != null)
                 throw new InvalidOperationException($"Student profile already exists for user {userId}");
 
-            // Validate skills if provided
-            if (studentDto.SkillIDs != null && studentDto.SkillIDs.Any())
-            {
-                var skills = await _skillRepository.GetAllAsync(s => studentDto.SkillIDs.Contains(s.SkillID),null);
-                if (skills.Count() != studentDto.SkillIDs.Count)
-                    throw new KeyNotFoundException("One or more skills not found");
-            }
+            
 
             var student = _mapper.Map<Student>(studentDto);
             student.UserID = userId;
-            // Set skills
-            if (studentDto.SkillIDs != null && studentDto.SkillIDs.Any())
-            {
-                var skills = await _skillRepository.GetAllAsync(s => studentDto.SkillIDs.Contains(s.SkillID),null);
-                student.Skills = skills.ToList();
-            }
 
             await _studentRepository.InsertAsync(student);
             await _unitOfWork.SaveChangeAsync();
@@ -124,27 +110,9 @@ namespace SWork.Service.Services
             var existingStudent = await _studentRepository.GetByIdAsync(id);
             if (existingStudent == null)
                 throw new KeyNotFoundException($"Student with ID {id} not found");
-
-            // Validate skills if provided
-            if (studentDto.SkillIDs != null && studentDto.SkillIDs.Any())
-            {
-                var skills = await _skillRepository.GetAllAsync(s => studentDto.SkillIDs.Contains(s.SkillID),null);
-                if (skills.Count() != studentDto.SkillIDs.Count)
-                    throw new KeyNotFoundException("One or more skills not found");
-            }
-
+            
             _mapper.Map(studentDto, existingStudent);
             existingStudent.UserID = userId;
-            // Update skills
-            if (studentDto.SkillIDs != null && studentDto.SkillIDs.Any())
-            {
-                var skills = await _skillRepository.GetAllAsync(s => studentDto.SkillIDs.Contains(s.SkillID),null);
-                existingStudent.Skills = skills.ToList();
-            }
-            else
-            {
-                existingStudent.Skills.Clear();
-            }
 
             _studentRepository.Update(existingStudent);
             await _unitOfWork.SaveChangeAsync();
@@ -162,14 +130,17 @@ namespace SWork.Service.Services
             return true;
         }
 
-        public async Task<IEnumerable<StudentResponseDTO>> GetStudentsBySkillAsync(int skillId)
+        public async Task<IEnumerable<StudentResponseDTO>> GetStudentsBySkillAsync(string skill)
         {
-            // Validate skill exists
-            var skill = await _skillRepository.GetByIdAsync(skillId);
-            if (skill == null)
-                throw new KeyNotFoundException($"Skill with ID {skillId} not found");
+            if (string.IsNullOrWhiteSpace(skill))
+                throw new ArgumentException("Tên kỹ năng không được để trống", nameof(skill));
 
-            var students = await _studentRepository.GetAllAsync(s => s.Skills.Any(sk => sk.SkillID == skillId), "User,Skills,Resumes,Applications,JobBookmarks");
+            // Tìm tất cả sinh viên có kỹ năng được chỉ định trong Resume
+            var students = await _studentRepository.GetAllAsync(
+                s => s.Resumes.Any(r => r.Skills.Contains(skill, StringComparison.OrdinalIgnoreCase)),
+                "User,Resumes,Applications,JobBookmarks"
+            );
+
             return students.Select(s => _mapper.Map<StudentResponseDTO>(s));
         }
 

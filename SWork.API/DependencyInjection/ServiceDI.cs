@@ -20,7 +20,6 @@ namespace SWork.API.DependencyInjection
             services.AddTransient<ISubscriptionService, SubscriptionService>();
             services.AddTransient<IJobService, JobService>();
             services.AddTransient<IJobCategoryService, JobCategoryService>();
-            services.AddTransient<ITemplateResumeService, TemplateResumeService>();
             services.AddTransient<IResumeService, ResumeService>();
             services.AddScoped<IStudentService, StudentService>();
             //Cloudinary

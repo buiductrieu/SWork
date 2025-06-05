@@ -14,6 +14,7 @@ namespace SWork.Data.Entities
         public int? ApplicationID { get; set; }
         public int Rating { get; set; }
         public string Comment { get; set; }
+        public bool IsOpen{ get; set; } = true; 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties

@@ -23,6 +23,4 @@ public class StudentCreateDTO
 
     [StringLength(1000, ErrorMessage = "Bio cannot exceed 1000 characters")]
     public string? Bio { get; set; }
-
-    public List<int>? SkillIDs { get; set; }
 }

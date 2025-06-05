@@ -12,10 +12,14 @@ namespace SWork.Data.Entities
     {
         [Key]
         public int ApplicationID { get; set; }
+        [Required]
         public int StudentID { get; set; }
+        [Required]
         public int JobID { get; set; }
-        public int ResumeID { get; set; }
+        public int? ResumeID { get; set; }
+        [Required]
         public string Coverletter { get; set; }
+        [Required]
         public string Status { get; set; } = "PENDING";
         public DateTime AppliedAt { get; set; } = DateTime.Now;
 

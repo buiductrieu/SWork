@@ -9,19 +9,16 @@ namespace SWork.Data.Models
     {
         public SWorkDbContext()
         {
-
         }
+
         public SWorkDbContext(DbContextOptions<SWorkDbContext> options) : base(options)
         {
-
         }
-
 
         public virtual DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
         public DbSet<Student> Students { get; set; }
         public DbSet<Employer> Employers { get; set; }
         public DbSet<Resume> Resumes { get; set; }
-        public DbSet<ResumeTemplate> ResumeTemplates { get; set; }
         public DbSet<Job> Jobs { get; set; }
         public DbSet<JobCategory> JobCategories { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
@@ -29,15 +26,11 @@ namespace SWork.Data.Models
         public DbSet<Interview> Interviews { get; set; }
         public DbSet<JobBookmark> JobBookmarks { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<Skill> Skills { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletTransaction> WalletTransactions { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Notification> Notifications { get; set; }
-
         public DbSet<RefreshToken> RefreshTokens { get; set; }
-
-        public ApplicationUser Reviewee { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -81,69 +74,40 @@ namespace SWork.Data.Models
                 .HasMany(s => s.Resumes)
                 .WithOne(r => r.Student)
                 .HasForeignKey(r => r.StudentID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Student>()
-                .HasMany(s => s.Applications)
-                .WithOne(a => a.Student)
+            modelBuilder.Entity<Application>()
+                .HasOne(a => a.Student)
+                .WithMany(s => s.Applications)
                 .HasForeignKey(a => a.StudentID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Employer>()
-                .HasMany(e => e.Jobs)
-                .WithOne(j => j.Employer)
-                .HasForeignKey(j => j.EmployerID)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Job>()
-                .HasMany(j => j.Applications)
-                .WithOne(a => a.Job)
+            modelBuilder.Entity<Application>()
+                .HasOne(a => a.Job)
+                .WithMany(j => j.Applications)
                 .HasForeignKey(a => a.JobID)
-                .OnDelete(DeleteBehavior.Restrict); // tránh vòng xoá
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Job>()
-                .Property(j => j.Salary)
-                .HasPrecision(18, 2); // 18 digits, 2 decimal places
+            modelBuilder.Entity<Application>()
+                .HasOne(a => a.Resume)
+                .WithMany(r => r.Applications)
+                .HasForeignKey(a => a.ResumeID)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<Wallet>()
-               .Property(w => w.Balance)
-               .HasPrecision(18, 2); // 18 digits, 2 decimal places
-
-            modelBuilder.Entity<Subscription>()
-                .Property(s => s.Price)
-                .HasPrecision(18, 2); // 18 digits, 2 decimal places
-
-             modelBuilder.Entity<WalletTransaction>()
-                .Property(w => w.Amount)
-                .HasPrecision(18, 2); // 18 digits, 2 decimal places
-
+            // Resume - Template (1-n)
+            modelBuilder.Entity<Resume>()
+                .HasOne(r => r.Student)
+                .WithMany(s => s.Resumes)
+                .HasForeignKey(r => r.StudentID)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Resume>()
                 .HasMany(r => r.Applications)
                 .WithOne(a => a.Resume)
                 .HasForeignKey(a => a.ResumeID)
-                .OnDelete(DeleteBehavior.Restrict); // tránh vòng xoá
+                .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<Application>()
-                .HasMany(a => a.Interviews)
-                .WithOne(i => i.Application)
-                .HasForeignKey(i => i.ApplicationID)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Wallet>()
-                .HasMany(w => w.Transactions)
-                .WithOne(t => t.Wallet)
-                .HasForeignKey(t => t.WalletID)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Resume - Template (1-n)
-            modelBuilder.Entity<Resume>()
-                .HasOne(r => r.ResumeTemplate)
-                .WithMany(t => t.Resumes)
-                .HasForeignKey(r => r.TemplateID)
-                .OnDelete(DeleteBehavior.SetNull); // nếu template bị xoá, resume vẫn tồn tại
-
-            // JobBookmark (n-n với thực thể trung gian)
+            // JobBookmark
             modelBuilder.Entity<JobBookmark>()
                 .HasKey(jb => jb.BookmarkID);
 
@@ -159,21 +123,7 @@ namespace SWork.Data.Models
                 .HasForeignKey(jb => jb.JobID)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Skill - Student (n-n thông qua bảng phụ)
-            modelBuilder.Entity<Student>()
-                .HasMany(s => s.Skills)
-                .WithMany(sk => sk.Students)
-                .UsingEntity<Dictionary<string, object>>(
-                    "StudentSkill",
-                    ss => ss.HasOne<Skill>().WithMany().HasForeignKey("SkillID"),
-                    ss => ss.HasOne<Student>().WithMany().HasForeignKey("StudentID"),
-                    ss =>
-                    {
-                        ss.HasKey("StudentID", "SkillID");
-                        ss.ToTable("StudentSkills");
-                    });
-
-            // Application - Review (1-n)
+            // Application - Review
             modelBuilder.Entity<Application>()
                 .HasMany(a => a.Reviews)
                 .WithOne(r => r.Application)
@@ -187,7 +137,6 @@ namespace SWork.Data.Models
                 .HasForeignKey(n => n.UserID)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ... existing code ...
             // Report - ApplicationUser
             modelBuilder.Entity<Report>()
                 .HasOne(r => r.User)
@@ -207,8 +156,23 @@ namespace SWork.Data.Models
                 .WithMany(a => a.Reviews)
                 .HasForeignKey(r => r.ApplicationID)
                 .OnDelete(DeleteBehavior.SetNull);
-        }
-        // ... existing code ...
-    }
 
+            // Configure decimal precision
+            modelBuilder.Entity<Job>()
+                .Property(j => j.Salary)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Wallet>()
+                .Property(w => w.Balance)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Subscription>()
+                .Property(s => s.Price)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<WalletTransaction>()
+                .Property(w => w.Amount)
+                .HasPrecision(18, 2);
+        }
+    }
 }
