@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SWork.Data.Entities;
 using SWork.RepositoryContract.Basic;
 using SWork.RepositoryContract.Interfaces;
@@ -21,7 +22,7 @@ namespace SWork.Service.Services
         private readonly IGenericRepository<Resume> _resumeRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        private const string DefaultIncludes = "User,Skills,Resumes,Applications,JobBookmarks";
+        private const string DefaultIncludes = "User,Resumes,Applications,JobBookmarks";
 
         public StudentService(
             IUnitOfWork unitOfWork, 
@@ -37,7 +38,7 @@ namespace SWork.Service.Services
 
         public async Task<StudentResponseDTO> GetStudentByIdAsync(int id)
         {
-            var student = await _studentRepository.GetByIdAsync(id);
+            var student = await _unitOfWork.GenericRepository<StudentResponseDTO>().GetByIdAsync(id);
             if (student == null)
                 throw new KeyNotFoundException($"Student with ID {id} not found");
 
@@ -54,8 +55,10 @@ namespace SWork.Service.Services
             if (!user.EmailConfirmed)
                 throw new InvalidOperationException("User email is not confirmed");
 
-            var students = await _studentRepository.GetAllAsync(s => s.UserID == userId, "User,Skills,Resumes,Applications,JobBookmarks");
-            var student = students.FirstOrDefault();
+            var student = await _studentRepository.GetFirstOrDefaultAsync(
+                s => s.UserID == userId,
+                DefaultIncludes
+            );
             if (student == null)
                 throw new KeyNotFoundException($"Student with User ID {userId} not found");
 
@@ -64,7 +67,7 @@ namespace SWork.Service.Services
 
         public async Task<IEnumerable<StudentResponseDTO>> GetAllStudentsAsync()
         {
-            var students = await _studentRepository.GetAllAsync(s => true, "User,Skills,Resumes,Applications,JobBookmarks");
+            var students = await _studentRepository.GetAllAsync(s => true, DefaultIncludes);
             return students.Select(s => _mapper.Map<StudentResponseDTO>(s));
         }
 
@@ -87,13 +90,11 @@ namespace SWork.Service.Services
             if (existingStudent != null)
                 throw new InvalidOperationException($"Student profile already exists for user {userId}");
 
-            
-
             var student = _mapper.Map<Student>(studentDto);
             student.UserID = userId;
-
             await _studentRepository.InsertAsync(student);
             await _unitOfWork.SaveChangeAsync();
+
             return _mapper.Map<StudentResponseDTO>(student);
         }
 
@@ -107,26 +108,29 @@ namespace SWork.Service.Services
             if (!user.EmailConfirmed)
                 throw new InvalidOperationException("User email is not confirmed");
 
-            var existingStudent = await _studentRepository.GetByIdAsync(id);
-            if (existingStudent == null)
+            var student = await _studentRepository.GetByIdAsync(id);
+            if (student == null)
                 throw new KeyNotFoundException($"Student with ID {id} not found");
-            
-            _mapper.Map(studentDto, existingStudent);
-            existingStudent.UserID = userId;
 
-            _studentRepository.Update(existingStudent);
+            if (student.UserID != userId)
+                throw new UnauthorizedAccessException("You don't have permission to update this student");
+
+            _mapper.Map(studentDto, student);
+            _studentRepository.Update(student);
             await _unitOfWork.SaveChangeAsync();
-            return _mapper.Map<StudentResponseDTO>(existingStudent);
+
+            return _mapper.Map<StudentResponseDTO>(student);
         }
 
         public async Task<bool> DeleteStudentAsync(int id)
         {
             var student = await _studentRepository.GetByIdAsync(id);
             if (student == null)
-                return false;
+                throw new KeyNotFoundException($"Student with ID {id} not found");
 
             _studentRepository.Delete(student);
             await _unitOfWork.SaveChangeAsync();
+
             return true;
         }
 
@@ -138,7 +142,7 @@ namespace SWork.Service.Services
             // Tìm tất cả sinh viên có kỹ năng được chỉ định trong Resume
             var students = await _studentRepository.GetAllAsync(
                 s => s.Resumes.Any(r => r.Skills.Contains(skill, StringComparison.OrdinalIgnoreCase)),
-                "User,Resumes,Applications,JobBookmarks"
+                DefaultIncludes
             );
 
             return students.Select(s => _mapper.Map<StudentResponseDTO>(s));
@@ -147,19 +151,47 @@ namespace SWork.Service.Services
         public async Task<IEnumerable<StudentResponseDTO>> GetStudentsByUniversityAsync(string university)
         {
             if (string.IsNullOrWhiteSpace(university))
-                throw new ArgumentException("University name cannot be empty", nameof(university));
+                throw new ArgumentException("Tên trường đại học không được để trống", nameof(university));
 
-            var students = await _studentRepository.GetAllAsync(s => s.University == university, "User,Skills,Resumes,Applications,JobBookmarks");
-            return students.Select(s => _mapper.Map<StudentResponseDTO>(s));
+            try
+            {
+                var students = await _studentRepository.GetAllAsync(
+                    s => EF.Functions.Like(s.University, $"%{university}%"),
+                    "User,Resumes,Applications,JobBookmarks"
+                );
+
+                if (!students.Any())
+                    return new List<StudentResponseDTO>();
+
+                return students.Select(s => _mapper.Map<StudentResponseDTO>(s));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi tìm kiếm sinh viên theo trường đại học: {ex.Message}");
+            }
         }
 
         public async Task<IEnumerable<StudentResponseDTO>> GetStudentsByMajorAsync(string major)
         {
             if (string.IsNullOrWhiteSpace(major))
-                throw new ArgumentException("Major cannot be empty", nameof(major));
+                throw new ArgumentException("Tên chuyên ngành không được để trống", nameof(major));
 
-            var students = await _studentRepository.GetAllAsync(s => s.Major == major, "User,Skills,Resumes,Applications,JobBookmarks");
-            return students.Select(s => _mapper.Map<StudentResponseDTO>(s));
+            try
+            {
+                var students = await _studentRepository.GetAllAsync(
+                    s => EF.Functions.Like(s.Major, $"%{major}%"),
+                    "User,Resumes,Applications,JobBookmarks"
+                );
+
+                if (!students.Any())
+                    return new List<StudentResponseDTO>();
+
+                return students.Select(s => _mapper.Map<StudentResponseDTO>(s));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi tìm kiếm sinh viên theo chuyên ngành: {ex.Message}");
+            }
         }
     }
 }
