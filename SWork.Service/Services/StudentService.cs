@@ -38,7 +38,7 @@ namespace SWork.Service.Services
 
         public async Task<StudentResponseDTO> GetStudentByIdAsync(int id)
         {
-            var student = await _unitOfWork.GenericRepository<StudentResponseDTO>().GetByIdAsync(id);
+            var student = await _unitOfWork.GenericRepository<Student>().GetByIdAsync(id);
             if (student == null)
                 throw new KeyNotFoundException($"Student with ID {id} not found");
 
