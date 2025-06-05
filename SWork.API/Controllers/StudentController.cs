@@ -129,12 +129,23 @@ namespace SWork.API.Controllers
         /// <summary>
         /// Get students by skill
         /// </summary>
-        [HttpGet("skill/{skillId}")]
+        [HttpGet("skill/{skill}")]
         [Authorize]
-        public async Task<IActionResult> GetStudentsBySkill(int skillId)
+        public async Task<IActionResult> GetStudentsBySkill(string skill)
         {
-            var students = await _studentService.GetStudentsBySkillAsync(skillId);
-            return Ok(students);
+            try
+            {
+                var students = await _studentService.GetStudentsBySkillAsync(skill);
+                return Ok(students);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Có lỗi xảy ra khi tìm kiếm sinh viên theo kỹ năng");
+            }
         }
 
         /// <summary>
