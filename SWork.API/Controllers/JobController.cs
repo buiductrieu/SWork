@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SWork.Data.DTO.JobDTO;
 using SWork.ServiceContract.Interfaces;
+using System.Security.Claims;
 
 namespace SWork.API.Controllers
 {
@@ -43,12 +45,15 @@ namespace SWork.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPost("create")]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> CreateJob([FromForm] CreateJobDTO dto)
         {
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             try
             {
-                await _jobService.CreateJobAsync(dto);
+                await _jobService.CreateJobAsync(dto, userId);
                 return Ok("Job created successfully.");
             }
             catch (Exception ex)
@@ -56,29 +61,15 @@ namespace SWork.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPut("update/{id}")]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> UpdateJob(int id, [FromForm] UpdateJobDTO dto)
         {
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             try
             {
-                var job = await _jobService.GetJobByIdAsync(id);
-                if (job == null) return NotFound("Job not found.");
-
-                // Cập nhật chỉ các trường có giá trị khác null
-                if (dto.Title != null) job.Title = dto.Title;
-                if (dto.Description != null) job.Description = dto.Description;
-                if (dto.Requirements != null) job.Requirements = dto.Requirements;
-                if (dto.Location != null) job.Location = dto.Location;
-                if (dto.Salary.HasValue) job.Salary = dto.Salary.Value;
-                if (dto.Status != null) job.Status = dto.Status;
-                if (dto.WorkingHours != null) job.WorkingHours = dto.WorkingHours;
-                if (dto.StartDate.HasValue) job.StartDate = dto.StartDate.Value;
-                if (dto.EndDate.HasValue) job.EndDate = dto.EndDate.Value;
-                if (dto.EmployerID.HasValue) job.EmployerID = dto.EmployerID.Value;
-                if (dto.SubscriptionID.HasValue) job.SubscriptionID = dto.SubscriptionID.Value;
-                //if (dto.CategoryID.HasValue) job.CategoryID = dto.CategoryID.Value;
-
-                await _jobService.UpdateJobAsync(job, dto.Image);
+                await _jobService.UpdateJobAsync(id, dto, userId);
 
                 return Ok("Job updated successfully.");
             }
@@ -88,11 +79,13 @@ namespace SWork.API.Controllers
             }
         }
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> DeleteJob(int id)
         {
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             try
             {
-                await _jobService.DeleteJobAsync(id);
+                await _jobService.DeleteJobAsync(id, userId);
                 return Ok("Job deleted successfully.");
             }
             catch (Exception ex)

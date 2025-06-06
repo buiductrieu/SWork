@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SWork.Data.Entities
 {
@@ -23,6 +20,7 @@ namespace SWork.Data.Entities
         public string Status { get; set; } = "PENDING";
         public DateTime AppliedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
 
         // Navigation properties
         [ForeignKey("StudentID")]

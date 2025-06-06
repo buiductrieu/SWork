@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SWork.Data.Entities;
+﻿
 using SWork.Data.DTO.StudentDTO;
 
 namespace SWork.ServiceContract.Interfaces

@@ -14,6 +14,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using SWork.Data.DTO.StudentDTO;
 using SWork.Data.DTO.CVDTO;
 using SWork.Data.DTO.EmployerDTO;
+using SWork.Data.DTO.ApplicationDTO;
 
 namespace SWork.Common.Helper
 {
@@ -24,6 +25,7 @@ namespace SWork.Common.Helper
             //User mapper
             //CreateMap<ApplicationUser, UserProfileUpdateDTO>();
 
+            // User
             CreateMap<UserRegisterDTO, ApplicationUser>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email)) // Sửa lỗi: ánh xạ Email từ Email
@@ -48,21 +50,30 @@ namespace SWork.Common.Helper
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber));
+
+            // Student
             CreateMap<StudentCreateDTO, Student>()
             .ForMember(dest => dest.StudentID, opt => opt.Ignore()); 
             CreateMap<UserRegisterDTO, ApplicationUser>();
             CreateMap<ApplicationUser, UserResponseDTO>();
-            CreateMap<CreateJobDTO, Job>().ReverseMap();
-            CreateMap<SubDTO, Subscription>().ReverseMap();
-            CreateMap<UpdateResumeDTO, Resume>()
-                
-                .ReverseMap();
-            CreateMap<CreateResumeDTO, Resume>().ReverseMap();
             CreateMap<Student, StudentResponseDTO>();
 
             CreateMap<EmployerCreateDTO, Employer>();
             CreateMap<Employer, EmployerResponseDTO>()
     .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company_name));
+            // Job
+            CreateMap<CreateJobDTO, Job>().ReverseMap();
+
+            //Subscription
+            CreateMap<SubDTO, Subscription>().ReverseMap();
+
+            //Resume
+            CreateMap<UpdateResumeDTO, Resume>() .ReverseMap();
+            CreateMap<CreateResumeDTO, Resume>().ReverseMap();
+
+            //Application
+            CreateMap<RequestApplyDTO, Application>().ReverseMap();
+
         }
        
     }
