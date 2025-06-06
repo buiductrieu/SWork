@@ -3,7 +3,8 @@ syntax: glob
 ### VisualStudio ###
 
 
-appsettings.Development.json
+appsettings.json
+**/Migrations/
 # Tool Runtime Dir
 # note: there is no trailing slash so if these are symlinks (which are seen as files,
 #       instead of directories), git will still ignore them.
@@ -18,7 +19,7 @@ appsettings.Development.json
 *.user
 *.userosscache
 *.sln.docstates
-
+**/Migrations/
 # Build results
 artifacts/
 .idea/

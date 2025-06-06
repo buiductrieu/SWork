@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SWork.Data.DTO.ApplicationDTO;
-using SWork.Data.DTO.AuthDTO;
 
 namespace SWork.Service.Services
 {
@@ -127,7 +126,7 @@ namespace SWork.Service.Services
 
             // get role admin
             var currentUser = await _unitOfWork.GenericRepository<ApplicationUser>().GetFirstOrDefaultAsync(a => a.Id == userId);
-            var userRole =  await _userManager.GetRolesAsync(currentUser);
+            var userRole = await _userManager.GetRolesAsync(currentUser);
 
             // check valid application
             bool isStudentOwner = student1 != null;
@@ -156,16 +155,40 @@ namespace SWork.Service.Services
             }
         }
 
+        public async Task<Pagination<Application>> GetPaginatedApplicationAsync(
+             int pageIndex,
+             int pageSize,
+             Expression<Func<Application, bool>>? predicate = null,
+             Expression<Func<Application, object>>? orderBy = null,
+             bool isDescending = false)
+        {
+            try
+            {
+                var result = await _unitOfWork.GenericRepository<Application>().GetPaginationAsync(
+                    predicate = predicate,
+                    includeProperties: null,
+                    pageIndex: pageIndex,
+                    pageSize: pageSize,
+                    orderBy: orderBy ?? (p => p.ApplicationID),
+                    isDescending: isDescending);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         private bool IsValidStatusTransition(string currentStatus, string newStatus)
         {
             return currentStatus switch
             {
                 "PENDING" => newStatus == "REJECTED" || newStatus == "APPROVED",
-                "APPROVED" => newStatus == "FINISHED",
+                "APPROVED" => newStatus == "WORKING" || newStatus == "REJECTED",
+                "WORKING" => newStatus == "FINISHED",
                 _ => false,
             };
         }
-
 
     }
 }
