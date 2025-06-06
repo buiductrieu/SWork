@@ -121,7 +121,8 @@ namespace SWork.Service
                 CompanySize = employerDto.CompanySize ?? string.Empty,
                 Website = employerDto.Website ?? string.Empty,
                 Description = employerDto.Description ?? string.Empty,
-                LogoUrl = string.Empty
+                LogoUrl = string.Empty,
+                Location = employerDto.Location ?? string.Empty
             };
 
             await _employerRepository.InsertAsync(employer);

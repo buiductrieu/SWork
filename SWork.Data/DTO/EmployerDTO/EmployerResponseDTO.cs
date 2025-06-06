@@ -10,5 +10,6 @@ namespace SWork.Data.DTO.EmployerDTO
         public string Website { get; set; }
         public string Description { get; set; }
         public string LogoUrl { get; set; }
+        public string Location { get; set; }
     }
 } 

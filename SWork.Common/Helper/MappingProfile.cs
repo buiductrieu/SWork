@@ -60,7 +60,8 @@ namespace SWork.Common.Helper
 
             CreateMap<EmployerCreateDTO, Employer>();
             CreateMap<Employer, EmployerResponseDTO>()
-    .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company_name));
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company_name))
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.Location));
             // Job
             CreateMap<CreateJobDTO, Job>().ReverseMap();
 

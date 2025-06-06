@@ -22,5 +22,8 @@ namespace SWork.Data.DTO.EmployerDTO
 
         [StringLength(100)]
         public string? LogoUrl { get; set; }
+
+        [StringLength(200)]
+        public string Location { get; set; }
     }
 } 
