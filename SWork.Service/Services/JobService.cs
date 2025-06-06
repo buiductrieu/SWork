@@ -34,8 +34,6 @@ namespace SWork.Service.Services
         }
         public async Task CreateJobAsync(CreateJobDTO jobDto, string userId)
         {
-            var category = await _unitOfWork.GenericRepository<JobCategory>().GetFirstOrDefaultAsync(a => a.CategoryID == jobDto.CategoryID);
-            if (category == null) throw new Exception("Loại công việc không tồn tại. Vui lòng chọn lại!");
 
             var subscription = await _unitOfWork.GenericRepository<Subscription>().GetFirstOrDefaultAsync(a => a.SubscriptionID == jobDto.SubscriptionID);
             if (subscription == null) throw new Exception("Gói bài viết không tồn tại.Vui lòng chọn lại!");
@@ -68,8 +66,6 @@ namespace SWork.Service.Services
 
         public async Task UpdateJobAsync(int jobId, UpdateJobDTO jobdto, string userId)
         {
-            var category = await _unitOfWork.GenericRepository<JobCategory>().GetFirstOrDefaultAsync(a => a.CategoryID == jobdto.CategoryID);
-            if (category == null) throw new Exception("Loại công việc không tồn tại. Vui lòng chọn lại!");
 
             var subscription = await _unitOfWork.GenericRepository<Subscription>().GetFirstOrDefaultAsync(a => a.SubscriptionID == jobdto.SubscriptionID);
             if (subscription == null) throw new Exception("Gói bài viết không tồn tại.Vui lòng chọn lại!");
@@ -99,7 +95,6 @@ namespace SWork.Service.Services
                 if (jobdto.StartDate.HasValue) job.StartDate = jobdto.StartDate.Value;
                 if (jobdto.EndDate.HasValue) job.EndDate = jobdto.EndDate.Value;
                 if (jobdto.SubscriptionID.HasValue) job.SubscriptionID = jobdto.SubscriptionID.Value;
-                if (jobdto.CategoryID.HasValue) job.CategoryID = jobdto.CategoryID.Value;
                 //update image
                 if (jobdto.Image != null)
                 {
