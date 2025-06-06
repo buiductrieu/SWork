@@ -1,6 +1,4 @@
-﻿
-
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWork.Data.DTO.JobDTO
@@ -33,7 +31,9 @@ namespace SWork.Data.DTO.JobDTO
 
         public int? EmployerID { get; set; }
         public int? SubscriptionID { get; set; }
-        public int? CategoryID { get; set; }
+        
+        [StringLength(100)]
+        public string? Category { get; set; }
 
         public IFormFile? Image { get; set; }
     }

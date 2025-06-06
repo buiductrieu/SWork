@@ -57,8 +57,6 @@ namespace SWork.Repository.UnitOfWork
             _repositories.Add(typeof(T), newRepository);
             return newRepository;
         }
-
-        public IJobCategoryRepository JobCategoryRepository { get; }
         public IJobRepository JobRepository { get; }
         public ISubscriptionRepository SubscriptionRepository { get; }
 

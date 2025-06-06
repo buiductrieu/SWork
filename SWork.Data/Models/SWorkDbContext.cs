@@ -20,7 +20,6 @@ namespace SWork.Data.Models
         public DbSet<Employer> Employers { get; set; }
         public DbSet<Resume> Resumes { get; set; }
         public DbSet<Job> Jobs { get; set; }
-        public DbSet<JobCategory> JobCategories { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Application> Applications { get; set; }
         public DbSet<Interview> Interviews { get; set; }

@@ -5,12 +5,12 @@ namespace SWork.Data.DTO.JobDTO
 {
     public class CreateJobDTO
     {
-
         [Required]
         public int SubscriptionID { get; set; }
 
-        [Required]
-        public int CategoryID { get; set; }
+        [Required(ErrorMessage = "Category is required.")]
+        [StringLength(100, ErrorMessage = "Category cannot exceed 100 characters.")]
+        public string Category { get; set; }
 
         [Required(ErrorMessage = "Job title is required.")]
         [StringLength(200, ErrorMessage = "Title cannot exceed 200 characters.")]

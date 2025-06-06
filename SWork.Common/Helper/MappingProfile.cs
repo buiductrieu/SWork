@@ -53,7 +53,6 @@ namespace SWork.Common.Helper
             CreateMap<ApplicationUser, UserResponseDTO>();
             CreateMap<CreateJobDTO, Job>().ReverseMap();
             CreateMap<SubDTO, Subscription>().ReverseMap();
-            CreateMap<JobCategoryDTO, JobCategory>().ReverseMap();
             CreateMap<UpdateResumeDTO, Resume>()
                 
                 .ReverseMap();

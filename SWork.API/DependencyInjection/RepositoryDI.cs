@@ -18,7 +18,6 @@ namespace SWork.API.DependencyInjection
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
 
             // DI Entities
-            services.AddTransient<IJobCategoryRepository, JobCategoryRepository>();
             services.AddTransient<IJobRepository, JobRepository>();
             services.AddTransient<ISubscriptionRepository, SubscriptionRepository>();
             services.AddTransient<ResumeRepository, ResumeRepository>();

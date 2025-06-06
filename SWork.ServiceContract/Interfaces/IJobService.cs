@@ -13,6 +13,6 @@
         Task CreateJobAsync(CreateJobDTO jobDto);
         Task UpdateJobAsync(Job job, IFormFile newImage);
         Task DeleteJobAsync(int jobId);
-        Task<Pagination<Job>> SearchJobAsync(JobSearchRequestDTO filter, int jobCategory, int pageIndex, int pageSize);
+        //Task<Pagination<Job>> SearchJobAsync(JobSearchRequestDTO filter, string category, int pageIndex, int pageSize);
     }
 }

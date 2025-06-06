@@ -16,7 +16,7 @@ namespace SWork.Data.Entities
         public int JobID { get; set; }
         public int EmployerID { get; set; }
         public int? SubscriptionID { get; set; }
-        public int? CategoryID { get; set; }
+        public string Category { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Requirements { get; set; }
@@ -37,8 +37,6 @@ namespace SWork.Data.Entities
         [ForeignKey("SubscriptionID")]
         public virtual Subscription Subscription { get; set; }
 
-        [ForeignKey("CategoryID")]
-        public virtual JobCategory JobCategory { get; set; }
         public virtual ICollection<Application> Applications { get; set; }
         public virtual ICollection<JobBookmark> JobBookmarks { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }

@@ -76,7 +76,7 @@ namespace SWork.API.Controllers
                 if (dto.EndDate.HasValue) job.EndDate = dto.EndDate.Value;
                 if (dto.EmployerID.HasValue) job.EmployerID = dto.EmployerID.Value;
                 if (dto.SubscriptionID.HasValue) job.SubscriptionID = dto.SubscriptionID.Value;
-                if (dto.CategoryID.HasValue) job.CategoryID = dto.CategoryID.Value;
+                //if (dto.CategoryID.HasValue) job.CategoryID = dto.CategoryID.Value;
 
                 await _jobService.UpdateJobAsync(job, dto.Image);
 
@@ -100,7 +100,18 @@ namespace SWork.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
+        //[HttpGet("search")]
+        //public async Task<IActionResult> SearchJobs([FromQuery] JobSearchRequestDTO filter, [FromQuery] string category, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        //{
+        //    try
+        //    {
+        //        var jobs = await _jobService.SearchJobAsync(filter, category, pageIndex, pageSize);
+        //        return Ok(jobs);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
     }
 }
