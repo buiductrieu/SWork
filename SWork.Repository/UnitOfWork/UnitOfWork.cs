@@ -58,9 +58,9 @@ namespace SWork.Repository.UnitOfWork
             return newRepository;
         }
 
-        public IJobCategoryRepository JobCategoryRepository { get; }
-        public IJobRepository JobRepository { get; }
         public ISubscriptionRepository SubscriptionRepository { get; }
+        public IApplicationRepository ApplicationRepository { get; }
+        public IJobRepository JobRepository { get; }
 
         public Task<int> SaveChangeAsync()
         {

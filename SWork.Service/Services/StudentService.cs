@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using SWork.Data.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 using SWork.RepositoryContract.Basic;
-using SWork.RepositoryContract.Interfaces;
-using SWork.RepositoryContract.IUnitOfWork;
-using SWork.ServiceContract.Interfaces;
 using SWork.Data.DTO.StudentDTO;
 
 namespace SWork.Service.Services

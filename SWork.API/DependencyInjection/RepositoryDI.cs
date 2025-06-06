@@ -18,11 +18,11 @@ namespace SWork.API.DependencyInjection
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
 
             // DI Entities
-            services.AddTransient<IJobCategoryRepository, JobCategoryRepository>();
+            services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<IJobRepository, JobRepository>();
             services.AddTransient<ISubscriptionRepository, SubscriptionRepository>();
-            services.AddTransient<ResumeRepository, ResumeRepository>();
-            services.AddTransient<IStudentRepository, StudentRepository>();
+            services.AddTransient<IResumeRepository, ResumeRepository>();
+            services.AddTransient<IApplicationRepository, ApplicationRepository>();
 
             // DI UnitOfWork
             services.AddTransient<IUnitOfWork, UnitOfWork>();

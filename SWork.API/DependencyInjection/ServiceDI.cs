@@ -19,9 +19,10 @@ namespace SWork.API.DependencyInjection
             // DI service entities
             services.AddTransient<ISubscriptionService, SubscriptionService>();
             services.AddTransient<IJobService, JobService>();
-            services.AddTransient<IJobCategoryService, JobCategoryService>();
             services.AddTransient<IResumeService, ResumeService>();
             services.AddScoped<IStudentService, StudentService>();
+            services.AddTransient<IApplicationService, ApplicationService>();
+
             //Cloudinary
             services.AddScoped<ICloudinaryImageService, CloudinaryImageService>();
             return services;

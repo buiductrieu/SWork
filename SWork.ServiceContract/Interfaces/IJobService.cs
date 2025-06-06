@@ -10,9 +10,9 @@
            bool isDescending = false);
 
         Task<Job> GetJobByIdAsync(int jobId);
-        Task CreateJobAsync(CreateJobDTO jobDto);
-        Task UpdateJobAsync(Job job, IFormFile newImage);
-        Task DeleteJobAsync(int jobId);
+        Task CreateJobAsync(CreateJobDTO jobDto, string userId);
+        Task UpdateJobAsync(int jobId, UpdateJobDTO jobdto, string userId);
+        Task DeleteJobAsync(int jobId, string userId);
         Task<Pagination<Job>> SearchJobAsync(JobSearchRequestDTO filter, int jobCategory, int pageIndex, int pageSize);
     }
 }

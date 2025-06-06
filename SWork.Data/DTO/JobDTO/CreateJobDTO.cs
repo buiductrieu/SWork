@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SWork.Data.DTO.JobDTO
 {
     public class CreateJobDTO
     {
+        [JsonIgnore]
+        public int EmployerID { get; set; }
 
         [Required]
         public int SubscriptionID { get; set; }
@@ -37,6 +40,8 @@ namespace SWork.Data.DTO.JobDTO
         public string? WorkingHours { get; set; }
         public DateTime? StartDate { get; set; } = null;
         public DateTime? EndDate { get; set; } = null;
+
+        [Required(ErrorMessage = "Mục hình ảnh không được để trống.")]
         public IFormFile? Image { get; set; }
     }
 }
