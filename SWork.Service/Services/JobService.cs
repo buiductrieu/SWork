@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using SWork.Data.DTO.JobDTO;
+﻿using SWork.Data.DTO.JobDTO;
 using SWork.ServiceContract.ICloudinaryService;
 
 namespace SWork.Service.Services
@@ -20,7 +19,7 @@ namespace SWork.Service.Services
             {
                 var result = await _unitOfWork.GenericRepository<Job>().GetPaginationAsync(
                     predicate = predicate,
-                    includeProperties: "JobCategory,Subscription", 
+                    includeProperties: "Subscription", 
                     pageIndex: pageIndex,
                     pageSize: pageSize,
                     orderBy: orderBy ?? (p => p.JobID),
@@ -33,8 +32,11 @@ namespace SWork.Service.Services
                 throw;
             }
         }
-        public async Task CreateJobAsync(CreateJobDTO jobDto)
+        public async Task CreateJobAsync(CreateJobDTO jobDto, string userId)
         {
+            var category = await _unitOfWork.GenericRepository<JobCategory>().GetFirstOrDefaultAsync(a => a.CategoryID == jobDto.CategoryID);
+            if (category == null) throw new Exception("Loại công việc không tồn tại. Vui lòng chọn lại!");
+
             var subscription = await _unitOfWork.GenericRepository<Subscription>().GetFirstOrDefaultAsync(a => a.SubscriptionID == jobDto.SubscriptionID);
             if (subscription == null) throw new Exception("Gói bài viết không tồn tại.Vui lòng chọn lại!");
 
@@ -56,7 +58,6 @@ namespace SWork.Service.Services
                 await _unitOfWork.GenericRepository<Job>().InsertAsync(job);
                 await _unitOfWork.SaveChangeAsync();
                 await _unitOfWork.CommitTransactionAsync();
-                //hub
             }
             catch
             {
@@ -65,7 +66,7 @@ namespace SWork.Service.Services
             }
         }
 
-        public async Task UpdateJobAsync(Job job, IFormFile newImage)
+        public async Task UpdateJobAsync(int jobId, UpdateJobDTO jobdto, string userId)
         {
             var category = await _unitOfWork.GenericRepository<JobCategory>().GetFirstOrDefaultAsync(a => a.CategoryID == jobdto.CategoryID);
             if (category == null) throw new Exception("Loại công việc không tồn tại. Vui lòng chọn lại!");
@@ -84,7 +85,7 @@ namespace SWork.Service.Services
 
 
             await _unitOfWork.BeginTransactionAsync();
-           // Console.WriteLine("job.ImageUrl: " + job.ImageUrl);
+            
             try
             {
                 // update properties 
@@ -102,13 +103,13 @@ namespace SWork.Service.Services
                 //update image
                 if (jobdto.Image != null)
                 {
-                 if(!string.IsNullOrEmpty(job.ImageUrl))
+                    if (!string.IsNullOrEmpty(job.ImageUrl))
                     {
                         string publicId = _cloudinaryImageService.ExtractPublicIdFromUrl(job.ImageUrl);
-                      //  Console.WriteLine("Extracted publicId: " + publicId);
+                        //  Console.WriteLine("Extracted publicId: " + publicId);
                         await _cloudinaryImageService.DeleteImageAsync(publicId);
                     }
-                    string imageUrl = await _cloudinaryImageService.UploadImageAsync(newImage, "job-images");
+                    string imageUrl = await _cloudinaryImageService.UploadImageAsync(jobdto.Image, "job-images");
                     job.ImageUrl = imageUrl;
                 }
                 _unitOfWork.GenericRepository<Job>().Update(job);
@@ -121,16 +122,17 @@ namespace SWork.Service.Services
                 throw;
             }
         }
-        public async Task DeleteJobAsync(int jobId)
+        public async Task DeleteJobAsync(int jobId, string userId)
         {
+            var job = await _unitOfWork.GenericRepository<Job>().GetFirstOrDefaultAsync(a => a.JobID == jobId);
+            if (job == null) throw new Exception("Bài viết không tồn tại.");
+
+            var employer = await _unitOfWork.GenericRepository<Employer>().GetFirstOrDefaultAsync(a => a.UserID == userId);
+            if (job.EmployerID != employer.EmployerID) throw new Exception("Bạn không có xóa bài viết này.");
+
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var job = await _unitOfWork.GenericRepository<Job>().GetByIdAsync(jobId);
-                if (job == null)
-                    throw new Exception("Job not found");
-
-                //delete image in cloudinary
                 if (!string.IsNullOrEmpty(job.ImageUrl))
                 {
                     string publicId = _cloudinaryImageService.ExtractPublicIdFromUrl(job.ImageUrl);
@@ -154,6 +156,31 @@ namespace SWork.Service.Services
             if(job == null)
                 throw new Exception("Job not found");
             return job;
+        }
+        public async Task<Pagination<Job>> SearchJobAsync(JobSearchRequestDTO filter , int jobCategory, int pageIndex, int pageSize)
+        {
+            Expression<Func<Job, bool>> predicate = job =>
+            (string.IsNullOrEmpty(filter.Keyword) ||
+            job.Title.Contains(filter.Keyword) ||
+            job.Description.Contains(filter.Keyword) ||
+            job.Requirements.Contains(filter.Keyword)) &&
+            (string.IsNullOrEmpty(filter.Location) || job.Location.Contains(filter.Location)) &&
+            (!filter.MinSalary.HasValue || job.Salary >= filter.MinSalary.Value) &&
+            (!filter.MaxSalary.HasValue || job.Salary <= filter.MaxSalary.Value);
+
+            var result = await _unitOfWork.GenericRepository<Job>().GetPaginationAsync(
+                predicate: predicate,
+                includeProperties: " Subscription",
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                orderBy: job => new
+                {
+                    Type = job.Subscription.SubscriptionName,
+                    CreateAt = job.CreatedAt
+                },
+                isDescending: true
+           );
+            return result;
         }
     }
 }

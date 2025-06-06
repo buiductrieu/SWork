@@ -13,7 +13,6 @@
         Task CreateJobAsync(CreateJobDTO jobDto, string userId);
         Task UpdateJobAsync(int jobId, UpdateJobDTO jobdto, string userId);
         Task DeleteJobAsync(int jobId, string userId);
-        //Task<Pagination<Job>> SearchJobAsync(JobSearchRequestDTO filter, int jobCategory, int pageIndex, int pageSize);
-
+        Task<Pagination<Job>> SearchJobAsync(JobSearchRequestDTO filter, int jobCategory, int pageIndex, int pageSize);
     }
 }

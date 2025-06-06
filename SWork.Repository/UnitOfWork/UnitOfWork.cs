@@ -57,8 +57,10 @@ namespace SWork.Repository.UnitOfWork
             _repositories.Add(typeof(T), newRepository);
             return newRepository;
         }
-        public IJobRepository JobRepository { get; }
+
         public ISubscriptionRepository SubscriptionRepository { get; }
+        public IApplicationRepository ApplicationRepository { get; }
+        public IJobRepository JobRepository { get; }
 
         public Task<int> SaveChangeAsync()
         {
