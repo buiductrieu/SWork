@@ -36,7 +36,7 @@ namespace SWork.Data.DTO.UserDTO
         public string PhoneNumber { get; set; } = string.Empty;
 
         // Trường tùy chọn (nếu bạn muốn người dùng cung cấp khi đăng ký)
-        public string AvatarUrl { get; set; }
+        public string? AvatarUrl { get; set; } = string.Empty;
 
         // Constructor mặc định (yêu cầu cho deserialization)
         public string Role { get; set; } = string.Empty;
