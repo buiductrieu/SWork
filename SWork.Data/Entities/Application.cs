@@ -19,6 +19,7 @@ namespace SWork.Data.Entities
         [Required]
         public string Status { get; set; } = "PENDING";
         public DateTime AppliedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
 
         // Navigation properties

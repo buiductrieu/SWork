@@ -7,6 +7,6 @@
         public string? Location { get; set; }
         public decimal? MinSalary { get; set; }
         public decimal? MaxSalary { get; set; }
-        public string? CategoryName { get; set; }
+        public string? Category { get; set; }
     }
 }

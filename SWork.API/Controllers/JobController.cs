@@ -93,7 +93,18 @@ namespace SWork.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
+        //[HttpGet("search")]
+        //public async Task<IActionResult> SearchJobs([FromQuery] JobSearchRequestDTO filter, [FromQuery] string category, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        //{
+        //    try
+        //    {
+        //        var jobs = await _jobService.SearchJobAsync(filter, category, pageIndex, pageSize);
+        //        return Ok(jobs);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
     }
 }
