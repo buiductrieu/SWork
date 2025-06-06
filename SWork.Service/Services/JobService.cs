@@ -35,6 +35,14 @@ namespace SWork.Service.Services
         }
         public async Task CreateJobAsync(CreateJobDTO jobDto)
         {
+            var subscription = await _unitOfWork.GenericRepository<Subscription>().GetFirstOrDefaultAsync(a => a.SubscriptionID == jobDto.SubscriptionID);
+            if (subscription == null) throw new Exception("Gói bài viết không tồn tại.Vui lòng chọn lại!");
+
+            var employer = await _unitOfWork.GenericRepository<Employer>().GetFirstOrDefaultAsync(a => a.UserID == userId);
+            if (employer == null) throw new Exception("Bạn không có quyền tạo mới công việc.");
+
+            jobDto.EmployerID = employer.EmployerID;
+
             var job = _mapper.Map<Job>(jobDto);
             await _unitOfWork.BeginTransactionAsync();
 
@@ -59,11 +67,40 @@ namespace SWork.Service.Services
 
         public async Task UpdateJobAsync(Job job, IFormFile newImage)
         {
+            var category = await _unitOfWork.GenericRepository<JobCategory>().GetFirstOrDefaultAsync(a => a.CategoryID == jobdto.CategoryID);
+            if (category == null) throw new Exception("Loại công việc không tồn tại. Vui lòng chọn lại!");
+
+            var subscription = await _unitOfWork.GenericRepository<Subscription>().GetFirstOrDefaultAsync(a => a.SubscriptionID == jobdto.SubscriptionID);
+            if (subscription == null) throw new Exception("Gói bài viết không tồn tại.Vui lòng chọn lại!");
+
+            var job = await _unitOfWork.GenericRepository<Job>().GetFirstOrDefaultAsync(a => a.JobID == jobId);
+            if (job == null) throw new Exception("Bài viết không tồn tại.");
+
+            if (job.Status == "IsActive") throw new Exception("Bài viết đã hết hạn.");
+
+            var employer = await _unitOfWork.GenericRepository<Employer>().GetFirstOrDefaultAsync(a => a.UserID == userId);
+
+            if (job.EmployerID != employer.EmployerID) throw new Exception("Bạn không có quyền chỉnh sửa bài viết này.");
+
+
             await _unitOfWork.BeginTransactionAsync();
            // Console.WriteLine("job.ImageUrl: " + job.ImageUrl);
             try
             {
-                if (newImage != null)
+                // update properties 
+                if (!string.IsNullOrWhiteSpace(jobdto.Title)) job.Title = jobdto.Title;
+                if (!string.IsNullOrWhiteSpace(jobdto.Description)) job.Description = jobdto.Description;
+                if (!string.IsNullOrWhiteSpace(jobdto.Requirements)) job.Requirements = jobdto.Requirements;
+                if (!string.IsNullOrWhiteSpace(jobdto.Location)) job.Location = jobdto.Location;
+                if (jobdto.Salary.HasValue) job.Salary = jobdto.Salary.Value;
+                if (!string.IsNullOrWhiteSpace(jobdto.Status)) job.Status = jobdto.Status;
+                if (!string.IsNullOrWhiteSpace(jobdto.WorkingHours)) job.WorkingHours = jobdto.WorkingHours;
+                if (jobdto.StartDate.HasValue) job.StartDate = jobdto.StartDate.Value;
+                if (jobdto.EndDate.HasValue) job.EndDate = jobdto.EndDate.Value;
+                if (jobdto.SubscriptionID.HasValue) job.SubscriptionID = jobdto.SubscriptionID.Value;
+                if (jobdto.CategoryID.HasValue) job.CategoryID = jobdto.CategoryID.Value;
+                //update image
+                if (jobdto.Image != null)
                 {
                  if(!string.IsNullOrEmpty(job.ImageUrl))
                     {
