@@ -32,7 +32,7 @@ namespace SWork.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         [Authorize(Roles = "Employer,Admin")]
 
         public async Task<IActionResult> UpdateApplication([FromForm] StatusOfApplyDTO request)
@@ -48,6 +48,8 @@ namespace SWork.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Employer,Admin.Student")]
         public async Task<IActionResult> GetApplicationById(int applyId)
         {
             try
