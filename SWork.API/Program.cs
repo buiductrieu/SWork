@@ -122,7 +122,6 @@ namespace SWork.API
 
             });
 
-
             // config appsettings.Development
             builder.Configuration
                    .SetBasePath(Directory.GetCurrentDirectory())
@@ -134,6 +133,15 @@ namespace SWork.API
             builder.Services.Configure<CloudinarySettings>(
                 builder.Configuration.GetSection("CloudinarySettings"));
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
@@ -148,6 +156,7 @@ namespace SWork.API
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCors();
             app.MapControllers();
 
             app.Run();
