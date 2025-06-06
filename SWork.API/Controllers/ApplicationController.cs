@@ -48,8 +48,8 @@ namespace SWork.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-        [HttpGet("{id}")]
-        [Authorize(Roles = "Employer,Admin.Student")]
+        [HttpGet]
+        [Authorize(Roles = "Employer,Admin,Student")]
         public async Task<IActionResult> GetApplicationById(int applyId)
         {
             try

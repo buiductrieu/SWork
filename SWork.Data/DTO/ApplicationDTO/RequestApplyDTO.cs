@@ -16,6 +16,7 @@ namespace SWork.Data.DTO.ApplicationDTO
         public string Coverletter { get; set; }
         [Required]
         public string Status { get; set; } = "PENDING";
-        public DateTime AppliedAt { get; set; } = DateTime.Now;
+        public DateTime AppliedAt { get; set; }
+        public DateTime? UpdateAt { get; set; }
     }
 }

@@ -42,7 +42,6 @@ namespace SWork.Service.Services
             if (employer == null) throw new Exception("Bạn không có quyền tạo mới công việc.");
 
             jobDto.EmployerID = employer.EmployerID;
-
             var job = _mapper.Map<Job>(jobDto);
             await _unitOfWork.BeginTransactionAsync();
 

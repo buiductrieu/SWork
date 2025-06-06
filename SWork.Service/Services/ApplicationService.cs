@@ -1,6 +1,6 @@
-﻿using SWork.Data.DTO.ApplicationDTO;
+﻿using Microsoft.AspNetCore.Identity;
+using SWork.Data.DTO.ApplicationDTO;
 using SWork.Data.DTO.AuthDTO;
-using SWork.Data.Entities;
 
 namespace SWork.Service.Services
 {
@@ -8,11 +8,13 @@ namespace SWork.Service.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ApplicationService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ApplicationService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = userManager;
         }
         public async Task<ResponseApplyDTO> CreateApplicationAsync(RequestApplyDTO apply, string userId)
         {
@@ -26,6 +28,9 @@ namespace SWork.Service.Services
             if (job.Status == "IsActive") throw new Exception("Công việc đã hết hạn không thể ứng tuyển. Vui lòng chọn công việc khác để ứng tuyển.");
 
             apply.StudentID = student.StudentID;
+            apply.Status = "PENDING";
+            apply.AppliedAt = DateTime.Now;
+            apply.UpdateAt = null;
 
             var application = _mapper.Map<Application>(apply);
 
@@ -77,7 +82,7 @@ namespace SWork.Service.Services
 
             if (!IsValidStatusTransition(application.Status, applyDto.Status))
                 throw new Exception("Trạng thái xét duyệt không hợp lệ.");
-
+            application.Status = applyDto.Status;
             await _unitOfWork.BeginTransactionAsync();
             try
             {
@@ -106,26 +111,37 @@ namespace SWork.Service.Services
 
         public async Task<ResponseApplyDTO> GetApplicationByIdAsync(int applyId, string userId)
         {
+            // get application
             var application = await _unitOfWork.GenericRepository<Application>().GetFirstOrDefaultAsync(a => a.ApplicationID == applyId);
             if (application == null) throw new Exception("Hồ sơ không tồn tại");
 
-            var employer = await _unitOfWork.GenericRepository<Employer>().GetFirstOrDefaultAsync(a => a.UserID == userId);
-            var student = await _unitOfWork.GenericRepository<Student>().GetFirstOrDefaultAsync(a => a.UserID == userId);
-            var Astudent = await _unitOfWork.GenericRepository<ApplicationUser>().GetFirstOrDefaultAsync(a => a.Id == student.UserID);
-            var currentUser = await _unitOfWork.GenericRepository<LoginResponseDTO>().GetFirstOrDefaultAsync(a => a.Role.Contains("Admin"));
+            // get job
             var job = await _unitOfWork.GenericRepository<Job>().GetFirstOrDefaultAsync(a => a.JobID == application.JobID);
 
+            // get student
+            var student1 = await _unitOfWork.GenericRepository<Student>().GetFirstOrDefaultAsync(a => a.StudentID == application.StudentID);            // get student from application
+            var student2 = await _unitOfWork.GenericRepository<ApplicationUser>().GetFirstOrDefaultAsync(a => a.Id == student1.UserID);  //get student from applicationUser
 
-            bool isStudentOwner = student != null && student.StudentID == application.StudentID;
-            bool isEmployerOwner = employer != null && job.EmployerID == employer.EmployerID;
-            bool isAdmin = currentUser != null && currentUser.Role.Contains("Admin");
+            //get employer
+            var employer = await _unitOfWork.GenericRepository<Employer>().GetFirstOrDefaultAsync(a => a.EmployerID == job.EmployerID);
+
+            // get role admin
+            var currentUser = await _unitOfWork.GenericRepository<ApplicationUser>().GetFirstOrDefaultAsync(a => a.Id == userId);
+            var userRole =  await _userManager.GetRolesAsync(currentUser);
+
+            // check valid application
+            bool isStudentOwner = student1 != null;
+            bool isEmployerOwner = employer != null;
+            bool isAdmin = userRole.Contains("Admin");
+
+
 
             if (isStudentOwner || isEmployerOwner || isAdmin)
             {
                 ResponseApplyDTO res = new()
                 {
                     STT = application.ApplicationID,
-                    StudentName = Astudent.UserName,
+                    StudentName = student2.UserName,
                     JobName = job.Title,
                     Status = application.Status,
                     ResumeID = application.ResumeID,
