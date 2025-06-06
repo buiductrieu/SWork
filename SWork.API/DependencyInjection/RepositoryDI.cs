@@ -22,6 +22,7 @@ namespace SWork.API.DependencyInjection
             services.AddTransient<ISubscriptionRepository, SubscriptionRepository>();
             services.AddTransient<ResumeRepository, ResumeRepository>();
             services.AddTransient<IStudentRepository, StudentRepository>();
+            services.AddTransient<IEmployerRepository, EmployerRepository>();
 
             // DI UnitOfWork
             services.AddTransient<IUnitOfWork, UnitOfWork>();

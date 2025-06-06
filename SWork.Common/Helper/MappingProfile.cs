@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using SWork.Data.DTO;
-using SWork.Data.DTO.CVDTO;
 using SWork.Data.DTO.JobDTO;
 using SWork.Data.DTO.SubDTO;
 using SWork.Data.DTO.UserDTO;
@@ -13,6 +12,8 @@ using SWork.Data.Entities;
 using SWork.Data.DTO.AuthDTO;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using SWork.Data.DTO.StudentDTO;
+using SWork.Data.DTO.CVDTO;
+using SWork.Data.DTO.EmployerDTO;
 
 namespace SWork.Common.Helper
 {
@@ -58,6 +59,10 @@ namespace SWork.Common.Helper
                 .ReverseMap();
             CreateMap<CreateResumeDTO, Resume>().ReverseMap();
             CreateMap<Student, StudentResponseDTO>();
+
+            CreateMap<EmployerCreateDTO, Employer>();
+            CreateMap<Employer, EmployerResponseDTO>()
+    .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company_name));
         }
        
     }
