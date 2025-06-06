@@ -118,19 +118,5 @@ namespace SWork.Service.Services
                 throw new Exception("Job not found");
             return job;
         }
-        //public async Task<Pagination<Job>> SearchJobAsync(JobSearchRequestDTO filter, string category, int pageIndex, int pageSize)
-        //{
-        //    Expression<Func<Job, bool>> predicate = job =>
-        //        (string.IsNullOrEmpty(filter.Keyword) ||
-        //            job.Title.Contains(filter.Keyword) ||
-        //            job.Description.Contains(filter.Keyword) ||
-        //            job.Requirements.Contains(filter.Keyword)) &&
-        //        (string.IsNullOrEmpty(filter.Location) || job.Location.Contains(filter.Location)) &&
-        //        (!filter.MinSalary.HasValue || job.Salary >= filter.MinSalary.Value) &&
-        //        (!filter.MaxSalary.HasValue || job.Salary <= filter.MaxSalary.Value) &&
-        //        (string.IsNullOrEmpty(category) || job.Category == category);
-
-        //    return await GetPaginatedJobAsync(pageIndex, pageSize, predicate);
-        //}
     }
 }
