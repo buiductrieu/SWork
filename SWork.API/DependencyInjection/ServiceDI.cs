@@ -1,6 +1,7 @@
 ﻿
 using SWork.Common.Helper;
 using SWork.Data.Entities;
+using SWork.Service;
 using SWork.Service.CloudinaryService;
 using SWork.Service.Services;
 using SWork.ServiceContract.ICloudinaryService;
@@ -21,6 +22,7 @@ namespace SWork.API.DependencyInjection
             services.AddTransient<IJobService, JobService>();
             services.AddTransient<IResumeService, ResumeService>();
             services.AddScoped<IStudentService, StudentService>();
+            services.AddScoped<IEmployerService, EmployerService>();
             services.AddTransient<IApplicationService, ApplicationService>();
 
             //Cloudinary
