@@ -60,20 +60,6 @@ namespace SWork.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobCategories",
-                columns: table => new
-                {
-                    CategoryID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_JobCategories", x => x.CategoryID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Subscriptions",
                 columns: table => new
                 {
@@ -348,7 +334,7 @@ namespace SWork.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployerID = table.Column<int>(type: "int", nullable: false),
                     SubscriptionID = table.Column<int>(type: "int", nullable: true),
-                    CategoryID = table.Column<int>(type: "int", nullable: true),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Requirements = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -371,11 +357,6 @@ namespace SWork.Data.Migrations
                         principalTable: "Employers",
                         principalColumn: "EmployerID",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Jobs_JobCategories_CategoryID",
-                        column: x => x.CategoryID,
-                        principalTable: "JobCategories",
-                        principalColumn: "CategoryID");
                     table.ForeignKey(
                         name: "FK_Jobs_Subscriptions_SubscriptionID",
                         column: x => x.SubscriptionID,
@@ -479,7 +460,8 @@ namespace SWork.Data.Migrations
                     ResumeID = table.Column<int>(type: "int", nullable: true),
                     Coverletter = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AppliedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    AppliedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -571,9 +553,9 @@ namespace SWork.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6e634d5f-d065-41c3-a898-b7ead7659b1d", null, "Student", "STUDENT" },
-                    { "a5f3b9ce-c705-4eb9-b333-64e445913436", null, "Admin", "ADMIN" },
-                    { "cc2245de-f78c-4fd6-90b6-7b5efa77bae6", null, "Employer", "EMPLOYER" }
+                    { "1bed3746-81ae-4c09-81ec-fe3d19b32d0a", null, "Student", "STUDENT" },
+                    { "5274541a-8727-43dc-aa62-edf93d494f46", null, "Employer", "EMPLOYER" },
+                    { "cfe68d3d-3e5b-4354-bcb5-84050873345b", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -651,11 +633,6 @@ namespace SWork.Data.Migrations
                 name: "IX_JobBookmarks_StudentID",
                 table: "JobBookmarks",
                 column: "StudentID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Jobs_CategoryID",
-                table: "Jobs",
-                column: "CategoryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Jobs_EmployerID",
@@ -777,9 +754,6 @@ namespace SWork.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Employers");
-
-            migrationBuilder.DropTable(
-                name: "JobCategories");
 
             migrationBuilder.DropTable(
                 name: "Subscriptions");
