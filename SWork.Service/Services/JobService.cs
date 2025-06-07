@@ -246,5 +246,51 @@ namespace SWork.Service.Services
                 PageSize = paginatedJobs.PageSize
             };
         }
+
+        public async Task<Pagination<JobSearchResponseDTO>> GetJobMarkByIdAsync(string userId, int pageIndex, int pageSize)
+        {
+            // 1. Lấy thông tin student từ userId
+            var student = await _unitOfWork.GenericRepository<Student>().GetFirstOrDefaultAsync(s => s.UserID == userId);
+            if (student == null) throw new Exception("Bạn cần đăng nhập hoặc tạo tài khoản trước khi xem danh sách.");
+
+            // 2. Lấy danh sách JobID đã bookmark bởi student
+            var bookmarks = await _unitOfWork.GenericRepository<JobBookmark>().GetAllAsync(b => b.StudentID == student.StudentID, null);
+
+            var bookmarkedJobIds = bookmarks.Select(b => b.JobID).ToList();
+
+            // 3. Lọc danh sách Job theo danh sách JobID đã bookmark
+            Expression<Func<Job, bool>> predicate = job => bookmarkedJobIds.Contains(job.JobID);
+
+
+            var paginatedJobs = await GetPaginatedJobAsync(
+                pageIndex,
+                pageSize,
+                predicate,
+                orderBy: j => j.JobID,
+                isDescending: true
+            );
+
+            // 4. Map sang DTO
+            var dtoList = paginatedJobs.Items.Select(job => new JobSearchResponseDTO
+            {
+                SubscriptionID = job.JobID,
+                Category = job.Category,
+                Title = job.Title,
+                Description = job.Description,
+                Requirements = job.Requirements,
+                Location = job.Location,
+                Salary = job.Salary,
+                WorkingHours = job.WorkingHours
+            }).ToList();
+
+            // 5. Trả về kết quả phân trang
+            return new Pagination<JobSearchResponseDTO>
+            {
+                Items = dtoList,
+                TotalItemsCount = paginatedJobs.TotalItemsCount,
+                PageIndex = paginatedJobs.PageIndex,
+                PageSize = paginatedJobs.PageSize
+            };
+        }
     }
 }

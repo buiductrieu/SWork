@@ -15,5 +15,6 @@
         Task DeleteJobAsync(int jobId, string userId);
         Task<Pagination<JobSearchResponseDTO>> GetActiveJobDtosAsync(int pageIndex, int pageSize);
         Task<Pagination<JobSearchResponseDTO>> GetJobByIdDtosAsync(string userId, int pageIndex, int pageSize);
+        Task<Pagination<JobSearchResponseDTO>> GetJobMarkByIdAsync(string userId, int pageIndex, int pageSize);
     }
 }

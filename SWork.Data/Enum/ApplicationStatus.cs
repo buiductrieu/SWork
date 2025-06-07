@@ -5,6 +5,7 @@ namespace SWork.Data.Enum
     {
         PENDING,
         APPROVED,
+        WORKING,
         REJECTED,
         FINISHED,
         DELETE

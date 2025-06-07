@@ -13,9 +13,11 @@ namespace SWork.API.Controllers
     public class JobBookMarkController : Controller
     {
         private readonly IJobBookMarkService _markService;
+        private readonly IJobService _jobSevice;
 
-        public JobBookMarkController(IJobBookMarkService markService)
+        public JobBookMarkController(IJobBookMarkService markService, IJobService jobService)
         {
+            _jobSevice = jobService;
             _markService = markService;
         }
 
@@ -35,6 +37,22 @@ namespace SWork.API.Controllers
             }
         }
 
+        [HttpGet("student/bookmarked-jobs")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> GetBookmarkedJobs([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                // Lấy userId từ token
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var result = await _jobSevice.GetJobMarkByIdAsync(userId, pageIndex, pageSize);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
         [HttpDelete("delete")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> DeleteJob(int markId)

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CloudinaryDotNet;
+using Microsoft.AspNetCore.Identity;
 using SWork.Data.DTO.ApplicationDTO;
+using SWork.Data.Enum;
 
 namespace SWork.Service.Services
 {
@@ -49,7 +51,7 @@ namespace SWork.Service.Services
                     ResumeID = application.ResumeID,
                     Coverletter = application.Coverletter,
                     AppliedAt = application.AppliedAt,
-                    UpdateAt =application.UpdatedAt,
+                    UpdateAt = application.UpdatedAt,
                 };
                 return res;
             }
@@ -221,6 +223,81 @@ namespace SWork.Service.Services
             {
                 var student = students.FirstOrDefault(s => s.StudentID == application.StudentID);
                 var studentUser = users.FirstOrDefault(u => u.Id == student?.UserID);
+
+                return new ResponseApplyDTO
+                {
+                    STT = application.ApplicationID,
+                    StudentName = studentUser?.UserName,
+                    JobName = job.Title,
+                    Status = application.Status,
+                    ResumeID = application.ResumeID,
+                    Coverletter = application.Coverletter,
+                    AppliedAt = application.AppliedAt,
+                    UpdateAt = application.UpdatedAt
+                };
+            }).ToList();
+
+            return new Pagination<ResponseApplyDTO>
+            {
+                Items = dtoList,
+                TotalItemsCount = paginatedApplications.TotalItemsCount,
+                PageIndex = paginatedApplications.PageIndex,
+                PageSize = paginatedApplications.PageSize
+            };
+        }
+
+        public async Task<Pagination<ResponseApplyDTO>> GetApplyJobForStudent(string userId, int pageIndex, int pageSize)
+        {
+            // Lấy Employer từ userId
+            var student = await _unitOfWork.GenericRepository<Student>()
+                .GetFirstOrDefaultAsync(e => e.UserID == userId);
+            if (student == null)
+                throw new Exception("Bạn cần đăng nhập hoặc tạo tài khoản trước khi xem.");
+
+            // Lọc các application theo JobID
+            Expression<Func<Application, bool>> predicate = application => application.StudentID == student.StudentID;
+
+            var paginatedApplications = await GetPaginatedApplicationAsync(
+                pageIndex,
+                pageSize,
+                predicate,
+                orderBy: a => a.ApplicationID,
+                isDescending: true
+            );
+            // Lấy danh sách Job và sinh viên liên quan
+            var jobIds = paginatedApplications.Items.Select(a => a.JobID).Distinct().ToList();
+            var jobs = await _unitOfWork.GenericRepository<Job>()
+                .GetAllAsync(j => jobIds.Contains(j.JobID), null);
+
+            var jobDict = jobs.ToDictionary(j => j.JobID, j => j);
+
+            // Lấy thông tin ApplicationUser của sinh viên
+            var studentUser = await _unitOfWork.GenericRepository<ApplicationUser>().GetFirstOrDefaultAsync(u => u.Id == student.UserID);
+
+            // sắp xếp
+            var statusOrder = new Dictionary<ApplicationStatus, int>
+            {
+                [ApplicationStatus.APPROVED] = 0,
+                [ApplicationStatus.PENDING] = 1,
+                [ApplicationStatus.WORKING] = 3,
+                [ApplicationStatus.REJECTED] = 4,
+                [ApplicationStatus.FINISHED] = 5,
+                [ApplicationStatus.DELETE] = 6
+            };
+
+
+            // Map kết quả
+            List<ResponseApplyDTO> dtoList = paginatedApplications.Items
+                .OrderBy(a =>
+                {
+                    return Enum.TryParse<ApplicationStatus>(a.Status, out var statusEnum)
+                        && statusOrder.TryGetValue(statusEnum, out var order)
+                        ? order
+                        : int.MaxValue;
+                })
+                .Select(application =>
+            {
+                jobDict.TryGetValue(application.JobID, out var job);
 
                 return new ResponseApplyDTO
                 {

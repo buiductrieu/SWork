@@ -16,6 +16,8 @@ namespace SWork.ServiceContract.Interfaces
              bool isDescending = false);
 
         Task<Pagination<ResponseApplyDTO>> GetApplyRelatedJobForEmployer(string userId, int jobId, int pageIndex, int pageSize);
+        Task<Pagination<ResponseApplyDTO>> GetApplyJobForStudent(string userId, int pageIndex, int pageSize);
     }
+
 
 }

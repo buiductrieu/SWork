@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SWork.Data.DTO.ApplicationDTO;
+using SWork.Service.Services;
 using SWork.ServiceContract.Interfaces;
 using System.Security.Claims;
 
@@ -32,9 +33,26 @@ namespace SWork.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("student/applied-jobs")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> GetAppliedJobs([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                var result = await _applicationService.GetApplyJobForStudent(userId, pageIndex, pageSize);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "Employer,Admin")]
-
         public async Task<IActionResult> UpdateApplication([FromForm] StatusOfApplyDTO request)
         {
             try
@@ -48,6 +66,7 @@ namespace SWork.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
         [HttpGet]
         [Authorize(Roles = "Employer,Admin,Student")]
         public async Task<IActionResult> GetApplicationById(int applyId)
@@ -60,11 +79,11 @@ namespace SWork.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new {message = ex.Message});
+                return BadRequest(new { message = ex.Message });
             }
         }
 
-        [HttpGet("employer/applications")]
+        [HttpGet("employer/jobs/applications")]
         [Authorize(Roles = "Employer,Admin")]
         public async Task<IActionResult> GetApplyRelatedJobForEmployer([FromQuery] int jobId, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
         {
