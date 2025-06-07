@@ -15,6 +15,7 @@ using SWork.Data.DTO.StudentDTO;
 using SWork.Data.DTO.CVDTO;
 using SWork.Data.DTO.EmployerDTO;
 using SWork.Data.DTO.ApplicationDTO;
+using SWork.Data.DTO.JobBookMarkDTO;
 
 namespace SWork.Common.Helper
 {
@@ -74,6 +75,9 @@ namespace SWork.Common.Helper
 
             //Application
             CreateMap<RequestApplyDTO, Application>().ReverseMap();
+
+            //BookMark
+            CreateMap<MarkDTO, JobBookmark>().ReverseMap();
 
         }
        

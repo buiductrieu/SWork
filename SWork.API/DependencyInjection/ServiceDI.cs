@@ -24,6 +24,8 @@ namespace SWork.API.DependencyInjection
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<IEmployerService, EmployerService>();
             services.AddTransient<IApplicationService, ApplicationService>();
+            services.AddTransient<IJobBookMarkService, JobBookMarkService>();
+           
 
             //Cloudinary
             services.AddScoped<ICloudinaryImageService, CloudinaryImageService>();
