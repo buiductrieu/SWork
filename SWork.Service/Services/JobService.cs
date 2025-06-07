@@ -62,7 +62,6 @@ namespace SWork.Service.Services
                 throw;
             }
         }
-
         public async Task UpdateJobAsync(int jobId, UpdateJobDTO jobdto, string userId)
         {
 
@@ -175,6 +174,77 @@ namespace SWork.Service.Services
                 isDescending: true
            );
             return result;
+        }
+        public async Task<Pagination<JobSearchResponseDTO>> GetActiveJobDtosAsync(int pageIndex, int pageSize)
+        {
+            // B1: Lọc theo Status = "Active"
+            Expression<Func<Job, bool>> predicate = job => job.Status == "Active";
+
+            // B2: Gọi hàm gốc lấy danh sách Job (pagination)
+            var paginatedJobs = await GetPaginatedJobAsync(
+                pageIndex,
+                pageSize,
+                predicate,
+                orderBy: j => j.JobID,
+                isDescending: true
+            );
+
+            // B3: Chuyển đổi từ Job -> JobSearchResponseDTO
+            var dtoList = paginatedJobs.Items.Select(job => new JobSearchResponseDTO
+            {
+                SubscriptionID = job.JobID,
+                Category = job.Title,
+                Title = job.Location,
+                Description = job.Description,
+                Requirements = job.Requirements,
+                Location = job.Location,
+                Salary = job.Salary,
+                WorkingHours = job.WorkingHours
+            }).ToList();
+
+            // B4: Trả về Pagination của DTO
+            return new Pagination<JobSearchResponseDTO>
+            {
+                Items = dtoList,
+                TotalItemsCount = paginatedJobs.TotalItemsCount,
+                PageIndex = paginatedJobs.PageIndex,
+                PageSize = paginatedJobs.PageSize
+            };
+        }
+        public async Task<Pagination<JobSearchResponseDTO>> GetJobByIdDtosAsync(string userId, int pageIndex, int pageSize)
+        {
+            var employer = await _unitOfWork.GenericRepository<Employer>().GetFirstOrDefaultAsync(a => a.UserID == userId);
+            if(employer == null) throw new Exception("Bạn cần đăng nhập hoặc tạo tài khoản trước khi xem danh sách.");
+
+            Expression<Func<Job, bool>> predicate = job => job.EmployerID == employer.EmployerID;
+
+            var paginatedJobs = await GetPaginatedJobAsync(
+                pageIndex,
+                pageSize,
+                predicate,
+                orderBy: j => j.JobID,
+                isDescending: true
+            );
+
+            var dtoList = paginatedJobs.Items.Select(job => new JobSearchResponseDTO
+            {
+                SubscriptionID = job.JobID,
+                Category = job.Title,
+                Title = job.Location,
+                Description = job.Description,
+                Requirements = job.Requirements,
+                Location = job.Location,
+                Salary = job.Salary,
+                WorkingHours = job.WorkingHours
+            }).ToList();
+
+            return new Pagination<JobSearchResponseDTO>
+            {
+                Items = dtoList,
+                TotalItemsCount = paginatedJobs.TotalItemsCount,
+                PageIndex = paginatedJobs.PageIndex,
+                PageSize = paginatedJobs.PageSize
+            };
         }
     }
 }

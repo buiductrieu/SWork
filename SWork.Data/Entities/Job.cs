@@ -8,17 +8,17 @@ namespace SWork.Data.Entities
     public class Job
     {
         [Key]
-        public int JobID { get; set; }
+        public int JobID { get; set; }  
         public int EmployerID { get; set; }
-        public int? SubscriptionID { get; set; }
-        public string Category { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Requirements { get; set; }
-        public string Location { get; set; }
+        public int? SubscriptionID { get; set; }  
+        public string Category { get; set; }   
+        public string Title { get; set; } 
+        public string Description { get; set; }  
+        public string Requirements { get; set; }  
+        public string Location { get; set; } 
         [Precision(18, 2)]
-        public decimal Salary { get; set; }
-        public string WorkingHours { get; set; }
+        public decimal Salary { get; set; } 
+        public string WorkingHours { get; set; }  
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string Status { get; set; } = "ACTIVE";

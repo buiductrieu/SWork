@@ -14,6 +14,8 @@ namespace SWork.ServiceContract.Interfaces
              Expression<Func<Application, bool>>? predicate = null,
              Expression<Func<Application, object>>? orderBy = null,
              bool isDescending = false);
+
+        Task<Pagination<ResponseApplyDTO>> GetApplyRelatedJobForEmployer(string userId, int jobId, int pageIndex, int pageSize);
     }
 
 }

@@ -48,7 +48,8 @@ namespace SWork.Service.Services
                     Status = application.Status,
                     ResumeID = application.ResumeID,
                     Coverletter = application.Coverletter,
-                    AppliedAt = application.AppliedAt
+                    AppliedAt = application.AppliedAt,
+                    UpdateAt =application.UpdatedAt,
                 };
                 return res;
             }
@@ -81,7 +82,9 @@ namespace SWork.Service.Services
 
             if (!IsValidStatusTransition(application.Status, applyDto.Status))
                 throw new Exception("Trạng thái xét duyệt không hợp lệ.");
+
             application.Status = applyDto.Status;
+            application.UpdatedAt = DateTime.Now;
             await _unitOfWork.BeginTransactionAsync();
             try
             {
@@ -97,7 +100,8 @@ namespace SWork.Service.Services
                     Status = application.Status,
                     ResumeID = application.ResumeID,
                     Coverletter = application.Coverletter,
-                    AppliedAt = application.AppliedAt
+                    AppliedAt = application.AppliedAt,
+                    UpdateAt = application.UpdatedAt,
                 };
                 return res;
             }
@@ -179,6 +183,66 @@ namespace SWork.Service.Services
                 throw;
             }
         }
+
+        public async Task<Pagination<ResponseApplyDTO>> GetApplyRelatedJobForEmployer(string userId, int jobId, int pageIndex, int pageSize)
+        {
+            // Lấy Employer từ userId
+            var employer = await _unitOfWork.GenericRepository<Employer>()
+                .GetFirstOrDefaultAsync(e => e.UserID == userId);
+            if (employer == null)
+                throw new Exception("Bạn cần đăng nhập hoặc tạo tài khoản trước khi xem.");
+
+            // Lấy Job
+            var job = await _unitOfWork.GenericRepository<Job>().GetFirstOrDefaultAsync(j => j.JobID == jobId);
+
+            if (job == null || job.EmployerID != employer.EmployerID)
+                throw new Exception("Bạn không có quyền xem hồ sơ ứng tuyển cho công việc này.");
+
+            // Lọc các application theo JobID
+            Expression<Func<Application, bool>> predicate = application => application.JobID == jobId;
+
+            var paginatedApplications = await GetPaginatedApplicationAsync(
+                pageIndex,
+                pageSize,
+                predicate,
+                orderBy: a => a.ApplicationID,
+                isDescending: true
+            );
+
+            // Lấy thông tin student tương ứng
+            var studentIds = paginatedApplications.Items.Select(a => a.StudentID).Distinct().ToList();
+            var students = await _unitOfWork.GenericRepository<Student>()
+                .GetAllAsync(s => studentIds.Contains(s.StudentID), null);
+            var users = await _unitOfWork.GenericRepository<ApplicationUser>()
+                .GetAllAsync(u => students.Select(s => s.UserID).Contains(u.Id), null);
+
+            // Map kết quả
+            List<ResponseApplyDTO> dtoList = paginatedApplications.Items.Select(application =>
+            {
+                var student = students.FirstOrDefault(s => s.StudentID == application.StudentID);
+                var studentUser = users.FirstOrDefault(u => u.Id == student?.UserID);
+
+                return new ResponseApplyDTO
+                {
+                    STT = application.ApplicationID,
+                    StudentName = studentUser?.UserName,
+                    JobName = job.Title,
+                    Status = application.Status,
+                    ResumeID = application.ResumeID,
+                    Coverletter = application.Coverletter,
+                    AppliedAt = application.AppliedAt,
+                    UpdateAt = application.UpdatedAt
+                };
+            }).ToList();
+
+            return new Pagination<ResponseApplyDTO>
+            {
+                Items = dtoList,
+                TotalItemsCount = paginatedApplications.TotalItemsCount,
+                PageIndex = paginatedApplications.PageIndex,
+                PageSize = paginatedApplications.PageSize
+            };
+        }
         private bool IsValidStatusTransition(string currentStatus, string newStatus)
         {
             return currentStatus switch
@@ -189,6 +253,5 @@ namespace SWork.Service.Services
                 _ => false,
             };
         }
-
     }
 }
