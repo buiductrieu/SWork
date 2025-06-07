@@ -63,5 +63,29 @@ namespace SWork.API.Controllers
                 return BadRequest(new {message = ex.Message});
             }
         }
+
+        [HttpGet("employer/applications")]
+        [Authorize(Roles = "Employer,Admin")]
+        public async Task<IActionResult> GetApplyRelatedJobForEmployer([FromQuery] int jobId, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                // Lấy userId từ token đăng nhập
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized(new { message = "Không thể xác thực người dùng." });
+                }
+
+                // Gọi service
+                var result = await _applicationService.GetApplyRelatedJobForEmployer(userId, jobId, pageIndex, pageSize);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

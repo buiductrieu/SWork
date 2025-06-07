@@ -51,19 +51,19 @@ namespace SWork.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a5f3b9ce-c705-4eb9-b333-64e445913436",
+                            Id = "227ed8aa-5e2b-436a-82ac-23cc80aea675",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "cc2245de-f78c-4fd6-90b6-7b5efa77bae6",
+                            Id = "4c2fc2ed-779c-43db-9e32-16a60b3d8dbc",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = "6e634d5f-d065-41c3-a898-b7ead7659b1d",
+                            Id = "2115ada0-22c7-4d93-90b6-629de89f6959",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -247,6 +247,9 @@ namespace SWork.Data.Migrations
                     b.Property<int>("StudentID")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("ApplicationID");
 
                     b.HasIndex("JobID");
@@ -369,6 +372,10 @@ namespace SWork.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LogoUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -440,8 +447,9 @@ namespace SWork.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JobID"));
 
-                    b.Property<int?>("CategoryID")
-                        .HasColumnType("int");
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -495,8 +503,6 @@ namespace SWork.Data.Migrations
 
                     b.HasKey("JobID");
 
-                    b.HasIndex("CategoryID");
-
                     b.HasIndex("EmployerID");
 
                     b.HasIndex("SubscriptionID");
@@ -528,27 +534,6 @@ namespace SWork.Data.Migrations
                     b.HasIndex("StudentID");
 
                     b.ToTable("JobBookmarks");
-                });
-
-            modelBuilder.Entity("SWork.Data.Entities.JobCategory", b =>
-                {
-                    b.Property<int>("CategoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryID"));
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CategoryID");
-
-                    b.ToTable("JobCategories");
                 });
 
             modelBuilder.Entity("SWork.Data.Entities.Notification", b =>
@@ -990,10 +975,6 @@ namespace SWork.Data.Migrations
 
             modelBuilder.Entity("SWork.Data.Entities.Job", b =>
                 {
-                    b.HasOne("SWork.Data.Entities.JobCategory", "JobCategory")
-                        .WithMany("Jobs")
-                        .HasForeignKey("CategoryID");
-
                     b.HasOne("SWork.Data.Entities.Employer", "Employer")
                         .WithMany("Jobs")
                         .HasForeignKey("EmployerID")
@@ -1005,8 +986,6 @@ namespace SWork.Data.Migrations
                         .HasForeignKey("SubscriptionID");
 
                     b.Navigation("Employer");
-
-                    b.Navigation("JobCategory");
 
                     b.Navigation("Subscription");
                 });
@@ -1148,11 +1127,6 @@ namespace SWork.Data.Migrations
                     b.Navigation("JobBookmarks");
 
                     b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("SWork.Data.Entities.JobCategory", b =>
-                {
-                    b.Navigation("Jobs");
                 });
 
             modelBuilder.Entity("SWork.Data.Entities.Resume", b =>
