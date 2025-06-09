@@ -130,21 +130,28 @@ namespace SWork.Service.Services
         }
         public async Task<LoginResponseDTO> LoginAsync(LoginRequestDTO loginRequestDTO)
         {
-            var user = await _userManager.FindByEmailAsync(loginRequestDTO.Username);
+            // Try to find user by email first
+            var user = await _userManager.FindByEmailAsync(loginRequestDTO.UsernameOrEmail);
+            
+            // If not found by email, try to find by username
             if (user == null)
-                throw new BadHttpRequestException("Username or password is incorrect!");
+            {
+                user = await _userManager.FindByNameAsync(loginRequestDTO.UsernameOrEmail);
+            }
+
+            if (user == null)
+                throw new BadHttpRequestException("Username/Email or password is incorrect!");
 
             var isValid = await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
 
             if (!isValid)
-                throw new BadHttpRequestException("Username or password is incorrect!");
+                throw new BadHttpRequestException("Username/Email or password is incorrect!");
 
             //if (!user.IsActive)
             //    throw new BadHttpRequestException("Your account is banned!");
 
             //if (!user.EmailConfirmed)
             //    return null;
-
 
             var token = await GenerateJwtToken(user);
             var refreshToken = await GetRefreshTokenAsync(user);
