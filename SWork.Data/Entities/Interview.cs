@@ -16,6 +16,8 @@ namespace SWork.Data.Entities
         public string MeetingLink { get; set; }
         public string Note { get; set; }
         public string Status { get; set; } = "SCHEDULED";
+        public int SenderID { get; set; }
+        public int ReceiverID { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties

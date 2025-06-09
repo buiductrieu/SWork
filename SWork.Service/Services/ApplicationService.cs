@@ -330,5 +330,22 @@ namespace SWork.Service.Services
                 _ => false,
             };
         }
+
+        private async Task TryCreateInterviewAsync(Application application, int employerId)
+        {
+            var interview = new Interview
+            {
+                ApplicationID = application.ApplicationID,
+            //    ScheduledTime = null,
+            //   Duration_minutes = null,
+                Location = null,
+                MeetingLink = null,
+                Note = null,
+                Status = "PENDING",
+                CreatedAt = DateTime.Now,
+            };
+            await _unitOfWork.GenericRepository<Interview>().InsertAsync(interview);
+            await _unitOfWork.SaveChangeAsync();
+        }
     }
 }

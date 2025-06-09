@@ -1,13 +1,6 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using SWork.Data;
 using SWork.Data.DTO.EmployerDTO;
-using SWork.Data.DTO.StudentDTO;
-using SWork.Data.Entities;
-using SWork.Repository.Repository;
 using SWork.RepositoryContract.Basic;
-using SWork.RepositoryContract.Interfaces;
-using SWork.ServiceContract.Interfaces;
 
 namespace SWork.Service
 {
