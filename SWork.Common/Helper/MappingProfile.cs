@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using AutoMapper;
-using SWork.Data.DTO;
 using SWork.Data.DTO.JobDTO;
 using SWork.Data.DTO.SubDTO;
 using SWork.Data.DTO.UserDTO;
 using SWork.Data.Entities;
 using SWork.Data.DTO.AuthDTO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using SWork.Data.DTO.StudentDTO;
 using SWork.Data.DTO.CVDTO;
 using SWork.Data.DTO.EmployerDTO;
@@ -83,6 +77,7 @@ namespace SWork.Common.Helper
 
             //Wallet
             CreateMap<WalletCreateDTO, Wallet>() .ReverseMap();
+            CreateMap<WalletResponseDTO, Wallet>().ReverseMap();
 
             //WalletTransaction
             CreateMap<WalletTransactionCreateDTO, WalletTransaction>().ReverseMap();

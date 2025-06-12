@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SWork.Data.DTO.AuthDTO;
 using SWork.Data.DTO.UserDTO;
+using SWork.Data.DTO.Wallet.ManagementWalletDTO;
+using SWork.ServiceContract.Interfaces;
 
 
 namespace SWork.Service.Services
@@ -17,16 +19,18 @@ namespace SWork.Service.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWalletService _walletService;
         //private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration, IUnitOfWork unitOfWork, IMapper mapper, RoleManager<IdentityRole> roleManager)
+        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration, IUnitOfWork unitOfWork, IMapper mapper, RoleManager<IdentityRole> roleManager, IWalletService walletService)
         {
             _userManager = userManager;
             _configuration = configuration;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _roleManager = roleManager;
+            _walletService = walletService;
             
         }
 
@@ -61,6 +65,10 @@ namespace SWork.Service.Services
                 }
 
                 await _userManager.AddToRoleAsync(user, dto.Role);
+                if (dto.Role == "Employer")
+                {
+                    await _walletService.CreateWalletAsync(new WalletCreateDTO { UserID = user.Id });
+                }
             }
             else
             {
