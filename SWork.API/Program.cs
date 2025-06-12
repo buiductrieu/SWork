@@ -10,6 +10,7 @@ using SWork.Data.Models;
 using SWork.Common.Helper;
 using SWork.API.DependencyInjection;
 using SWork.Service.CloudinaryService;
+using Microsoft.Extensions.Configuration;
 
 namespace SWork.API
 {
@@ -35,7 +36,7 @@ namespace SWork.API
             builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("EmailSettings"));
 
             // Repositories & Services
-            builder.Services.AddSWorkDependencies();
+            builder.Services.AddSWorkDependencies(builder.Configuration);
 
             // Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -132,6 +133,13 @@ namespace SWork.API
             // config CloundinarySettings
             builder.Services.Configure<CloudinarySettings>(
                 builder.Configuration.GetSection("CloudinarySettings"));
+
+            // --- Registering PayOSSettings ---
+            builder.Services.Configure<PayOSSettings>(builder.Configuration.GetSection(PayOSSettings.SectionName));
+
+            // --- Registering AppConfig ---
+            builder.Services.Configure<AppConfig>(builder.Configuration.GetSection(AppConfig.SectionName));
+
 
             builder.Services.AddCors(options =>
             {

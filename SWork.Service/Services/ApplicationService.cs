@@ -1,4 +1,4 @@
-﻿using CloudinaryDotNet;
+﻿
 using Microsoft.AspNetCore.Identity;
 using SWork.Data.DTO.ApplicationDTO;
 using SWork.Data.Enum;

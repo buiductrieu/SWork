@@ -16,6 +16,8 @@ using SWork.Data.DTO.CVDTO;
 using SWork.Data.DTO.EmployerDTO;
 using SWork.Data.DTO.ApplicationDTO;
 using SWork.Data.DTO.JobBookMarkDTO;
+using SWork.Data.DTO.Wallet.ManagementWalletDTO;
+using SWork.Data.DTO.Wallet.TransactionDTO;
 
 namespace SWork.Common.Helper
 {
@@ -78,6 +80,14 @@ namespace SWork.Common.Helper
 
             //BookMark
             CreateMap<MarkDTO, JobBookmark>().ReverseMap();
+
+            //Wallet
+            CreateMap<WalletCreateDTO, Wallet>() .ReverseMap();
+
+            //WalletTransaction
+            CreateMap<WalletTransactionCreateDTO, WalletTransaction>().ReverseMap();
+            CreateMap<WalletTransactionResponseDTO, WalletTransaction>().ReverseMap();
+
 
         }
        

@@ -2,10 +2,10 @@
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddSWorkDependencies(this IServiceCollection services)
+        public static IServiceCollection AddSWorkDependencies(this IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddServiceDependencies()
+                .AddServiceDependencies(configuration)
                 .AddRepositoryDependencies();
 
             return services;    
