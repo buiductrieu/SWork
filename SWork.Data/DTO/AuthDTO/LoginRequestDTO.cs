@@ -10,8 +10,7 @@ namespace SWork.Data.DTO.AuthDTO
     public class LoginRequestDTO
     {
         [Required]
-        [DataType(DataType.EmailAddress)]
-        public string Username { get; set; } = string.Empty;
+        public string UsernameOrEmail { get; set; } = string.Empty;
 
         [Required]
         [DataType(DataType.Password)]
